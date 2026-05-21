@@ -1135,6 +1135,7 @@ tr:hover td { background: var(--blue-faint); }
   .f-row { grid-template-columns: 1fr; }
 }
 </style>
+<link rel="stylesheet" href="css/admin-v2.css">
 </head>
 <body>
 
@@ -1275,9 +1276,6 @@ tr:hover td { background: var(--blue-faint); }
     </button>
     <button class="nav-item" data-page="branding">
       <span class="nav-icon">🎨</span> Marque & identité
-    </button>
-    <button class="nav-item" data-page="sectioncolors">
-      <span class="nav-icon">🖌️</span> Couleurs des sections
     </button>
     <button class="nav-item" data-page="settings">
       <span class="nav-icon">⚙️</span> Paramètres
@@ -1713,19 +1711,6 @@ tr:hover td { background: var(--blue-faint); }
       </div>
     </div>
 
-    <!-- ── Couleurs des sections ── -->
-    <div class="admin-page" id="page-sectioncolors">
-      <div class="page-hd">
-        <div>
-          <h1>🖌️ Couleurs des sections</h1>
-          <p>Personnalisez la couleur de fond de chaque section des pages publiques.</p>
-        </div>
-        <button class="btn btn-secondary" id="btn-sectioncolors-reset">Tout réinitialiser</button>
-      </div>
-      <div id="alert-sectioncolors" class="alert"></div>
-      <div id="sectioncolors-wrap"></div>
-    </div>
-
     <!-- ── Settings ── -->
     <div class="admin-page" id="page-settings">
       <div class="page-hd">
@@ -1874,7 +1859,7 @@ tr:hover td { background: var(--blue-faint); }
           <input type="url" id="a-img" placeholder="https://… ou choisir depuis la médiathèque" oninput="previewImg(this.value)" style="flex:1;">
           <button type="button" class="btn btn-secondary" id="btn-a-img-pick" style="white-space:nowrap;">📁 Médiathèque</button>
         </div>
-        <img id="a-img-preview" class="img-preview" src="" alt="Aperçu" style="margin-top:.6rem; display:none;">
+        <img id="a-img-preview" class="img-preview" alt="Aperçu" style="margin-top:.6rem; display:none;">
       </div>
       <div class="f-group">
         <label>Extrait (résumé affiché en liste)</label>
@@ -2177,7 +2162,7 @@ tr:hover td { background: var(--blue-faint); }
         <input type="file" id="ph-file" accept="image/*">
         <p id="ph-file-info" style="font-size:.82rem; color:#5b6470; margin-top:.4rem;"></p>
       </div>
-      <img id="ph-preview" class="img-preview" src="" alt="" style="margin-top:.6rem; max-height:200px;">
+      <img id="ph-preview" class="img-preview" alt="" style="margin-top:.6rem; max-height:200px; display:none;">
       <div class="f-row">
         <div class="f-group"><label>Ordre d'affichage</label><input type="number" id="ph-order" value="100" min="1"></div>
         <div class="f-group" style="display:flex; flex-direction:column; gap:.4rem; padding-top:1.6rem;">
@@ -2411,6 +2396,7 @@ tr:hover td { background: var(--blue-faint); }
 
 <script src="js/db.js"></script>
 <script src="js/admin-services.js"></script>
+<script src="js/admin-v2.js" defer></script>
 <script>
 'use strict';
 
@@ -2546,7 +2532,6 @@ function refreshPage(page) {
   if (page === 'assopage')     renderAssoPage();
   if (page === 'pages')        renderPages();
   if (page === 'branding')     renderBranding();
-  if (page === 'sectioncolors') renderSectionColors();
   if (page === 'media')        renderMedia();
   if (page === 'versions')     renderVersions();
   if (page === 'users')        renderUsers();
@@ -5864,253 +5849,6 @@ function renderBranding() {
     showAlert('alert-branding', '✓ Marque réinitialisée aux valeurs par défaut.');
   };
 }
-
-/* ══════════════════════════════════════════════════ */
-/* ── Couleurs des sections ────────────────────────── */
-/* ══════════════════════════════════════════════════ */
-/* Manifeste des sections personnalisables (page → liste) */
-const CUSTOMIZABLE_SECTIONS = {
-  'index.html': [
-    { id: 'hero',             label: 'Hero (bandeau d\'accueil)' },
-    { id: 'presentation-asso',label: 'Présentation de l\'association' },
-    { id: 'nos-services',     label: 'Nos services (4 cartes)' },
-    { id: 'valeurs',          label: 'Nos valeurs' },
-    { id: 'actualites',       label: 'Dernières actualités' },
-    { id: 'temoignages',      label: 'Témoignages' },
-    { id: 'localisation',     label: 'Localisation à Stains' },
-    { id: 'cta',              label: 'Appel à l\'action (bas de page)' },
-  ],
-  'foyer-accueil.html': [
-    { id: 'hero',             label: 'Hero Foyer' },
-    { id: 'presentation',     label: 'Présentation' },
-    { id: 'public-accueilli', label: 'Public accueilli' },
-    { id: 'hebergement',      label: 'Hébergement' },
-    { id: 'equipe',           label: 'Équipe' },
-    { id: 'galerie',          label: 'Galerie' },
-    { id: 'actualites',       label: 'Actualités' },
-    { id: 'agenda',           label: 'Agenda' },
-    { id: 'faq',              label: 'FAQ' },
-    { id: 'contact',          label: 'Contact' },
-  ],
-  'saj-accueil.html': [
-    { id: 'hero',             label: 'Hero SAJ' },
-    { id: 'presentation',     label: 'Présentation' },
-    { id: 'public-accueilli', label: 'Public accueilli' },
-    { id: 'ateliers',         label: 'Ateliers' },
-    { id: 'vie-collective',   label: 'Vie collective' },
-    { id: 'equipe',           label: 'Équipe' },
-    { id: 'galerie',          label: 'Galerie' },
-    { id: 'actualites',       label: 'Actualités' },
-    { id: 'agenda',           label: 'Agenda' },
-    { id: 'faq',              label: 'FAQ' },
-    { id: 'contact',          label: 'Contact' },
-  ],
-  'savs-accueil.html': [
-    { id: 'hero',                 label: 'Hero SAVS' },
-    { id: 'presentation',         label: 'Présentation' },
-    { id: 'accompagnement',       label: 'Modalités d\'accompagnement' },
-    { id: 'parentalite-logement', label: 'Parentalité & logement' },
-    { id: 'projet-auvi',          label: 'Projet AUVI' },
-    { id: 'equipe',               label: 'Équipe' },
-    { id: 'galerie',              label: 'Galerie' },
-    { id: 'actualites',           label: 'Actualités' },
-    { id: 'agenda',               label: 'Agenda' },
-    { id: 'faq',                  label: 'FAQ' },
-    { id: 'contact',              label: 'Contact' },
-  ],
-  'emp-accueil.html': [
-    { id: 'hero',                label: 'Hero EMP' },
-    { id: 'bandeau-info',        label: 'Bandeau d\'information' },
-    { id: 'presentation',        label: 'Présentation' },
-    { id: 'public-accueilli',    label: 'Public accueilli' },
-    { id: 'projet-pedagogique',  label: 'Projet pédagogique' },
-    { id: 'equipe',              label: 'Équipe' },
-    { id: 'galerie',             label: 'Galerie' },
-    { id: 'actualites',          label: 'Actualités' },
-    { id: 'agenda',              label: 'Agenda' },
-    { id: 'faq',                 label: 'FAQ' },
-    { id: 'contact',             label: 'Contact' },
-  ]
-};
-
-const SECTION_PAGE_LABELS = {
-  'index.html': '🏠 Accueil association',
-  'foyer-accueil.html': '🏡 Foyer Les Trois Rivières',
-  'saj-accueil.html': '🎨 SAJ Les Trois Rivières',
-  'savs-accueil.html': '🤝 SAVS Les Trois Rivières',
-  'emp-accueil.html': '🎒 EMP Henri Wallon'
-};
-
-function renderSectionColors() {
-  const wrap = document.getElementById('sectioncolors-wrap');
-  if (!wrap) return;
-  const styles = FoyerDB.getSectionStyles();
-
-  const sections = Object.entries(CUSTOMIZABLE_SECTIONS).map(([page, list]) => {
-    const rows = list.map(s => {
-      const key = page + ':' + s.id;
-      const cur = styles[key] || {};
-      const color = cur.backgroundColor || '';
-      const img   = cur.backgroundImage || '';
-      const ovr   = typeof cur.overlay === 'number' ? cur.overlay : 0;
-      const inputId = 'sc-img-' + page.replace(/\W/g,'') + '-' + s.id;
-      const hasImg = !!img;
-      return `
-        <div class="sc-row" data-page="${page}" data-id="${s.id}">
-          <div class="sc-info">
-            <strong>${escapeHtml(s.label)}</strong>
-            <span class="sc-id">#${escapeHtml(s.id)}</span>
-          </div>
-          <div class="sc-controls">
-            <label class="sc-label">Couleur</label>
-            <input type="color" class="sc-color" value="${color || '#ffffff'}" ${color ? '' : 'data-unset="1"'}>
-            <input type="text" class="sc-hex" value="${escapeHtml(color)}" placeholder="auto" maxlength="7">
-            <label class="sc-label">Image</label>
-            <input type="text" id="${inputId}" class="sc-img" value="${escapeHtml(img)}" placeholder="URL ou choisir →">
-            <button type="button" class="btn btn-sm btn-secondary" data-mp-target="${inputId}" title="Choisir dans la médiathèque">📁</button>
-            <label class="sc-label sc-overlay-label" ${hasImg ? '' : 'style="opacity:.4;"'}>Voile</label>
-            <input type="range" class="sc-overlay" min="0" max="90" step="5" value="${Math.round(ovr*100)}" ${hasImg ? '' : 'disabled'}>
-            <span class="sc-overlay-val">${Math.round(ovr*100)}%</span>
-            <button class="btn btn-sm btn-primary sc-save" title="Valider et appliquer les modifications">✓ Valider</button>
-            <button class="btn btn-sm btn-secondary sc-clear" title="Réinitialiser cette section">↺</button>
-          </div>
-        </div>`;
-    }).join('');
-    return `
-      <div class="sc-page-group">
-        <h3 class="sc-page-title">${SECTION_PAGE_LABELS[page] || page}
-          <a href="${page}" target="_blank" class="sc-view">↗ Voir</a>
-        </h3>
-        <div class="sc-page-rows">${rows}</div>
-      </div>`;
-  }).join('');
-
-  wrap.innerHTML = `
-    <style>
-      .sc-page-group { background: white; border: 1px solid var(--border-soft, #d8e2ea); border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1.2rem; }
-      .sc-page-title { font-family: 'Inter', sans-serif; font-size: 1.05rem; margin: 0 0 1rem; display: flex; justify-content: space-between; align-items: center; color: var(--text, #1a2530); }
-      .sc-view { font-size: .85rem; font-weight: 500; color: var(--primary, #256880); text-decoration: none; }
-      .sc-view:hover { text-decoration: underline; }
-      .sc-row { display: flex; align-items: center; justify-content: space-between; padding: .9rem 0; border-top: 1px solid #f0f3f6; gap: 1rem; flex-wrap: wrap; }
-      .sc-row:first-child { border-top: none; }
-      .sc-info { flex: 1 1 200px; min-width: 0; }
-      .sc-info strong { display: block; font-size: .95rem; color: var(--text, #1a2530); }
-      .sc-id { font-size: .78rem; color: #aab5be; font-family: monospace; }
-      .sc-controls { display: flex; gap: .4rem; align-items: center; flex-wrap: wrap; }
-      .sc-label { font-size: .78rem; color: #7a8e9a; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; margin-left: .4rem; }
-      .sc-color { width: 40px; height: 32px; padding: 0; border: 1px solid #d8e2ea; border-radius: 6px; cursor: pointer; }
-      .sc-hex { width: 78px; font-family: monospace; font-size: .82rem; padding: .35rem .4rem; border: 1px solid #d8e2ea; border-radius: 6px; }
-      .sc-img { width: 180px; font-size: .82rem; padding: .35rem .5rem; border: 1px solid #d8e2ea; border-radius: 6px; }
-      .sc-overlay { width: 100px; }
-      .sc-overlay-val { font-size: .78rem; color: #526370; font-family: monospace; width: 36px; text-align: right; }
-      .sc-clear { padding: .3rem .6rem; }
-      .sc-save { padding: .3rem .8rem; transition: background .2s; }
-      .sc-row[data-dirty="1"] { background: #fff8ec; }
-      .sc-row[data-dirty="1"] .sc-info strong::after {
-        content: ' •';
-        color: #e09a3a;
-        font-size: 1.4rem;
-        line-height: 0;
-        vertical-align: middle;
-      }
-    </style>
-    <p style="color:#526370; font-size:.92rem; margin-bottom:1.5rem;">
-      Pour chaque section, vous pouvez choisir une <strong>couleur de fond</strong> et/ou une <strong>image de fond</strong>.
-      Quand une image est définie, ajustez le <strong>voile</strong> sombre pour garder le texte lisible.
-      Les changements sont appliqués immédiatement sur les pages publiques.
-    </p>
-    ${sections}
-  `;
-
-  // Wire up events
-  wrap.querySelectorAll('.sc-row').forEach(row => {
-    const page = row.dataset.page;
-    const id = row.dataset.id;
-    const color = row.querySelector('.sc-color');
-    const hex = row.querySelector('.sc-hex');
-    const img = row.querySelector('.sc-img');
-    const ovr = row.querySelector('.sc-overlay');
-    const ovrVal = row.querySelector('.sc-overlay-val');
-    const ovrLabel = row.querySelector('.sc-overlay-label');
-    const save = row.querySelector('.sc-save');
-    const clear = row.querySelector('.sc-clear');
-
-    const updateOverlayUI = () => {
-      const hasImg = !!img.value.trim();
-      ovr.disabled = !hasImg;
-      if (ovrLabel) ovrLabel.style.opacity = hasImg ? '1' : '.4';
-    };
-
-    const markDirty = () => {
-      row.setAttribute('data-dirty', '1');
-      save.textContent = '✓ Valider';
-      save.style.background = '';
-    };
-
-    // Marqueur visuel "modifié" — les modifications ne s'appliquent qu'au clic sur Valider
-    color.addEventListener('input', () => {
-      hex.value = color.value;
-      color.removeAttribute('data-unset');
-      markDirty();
-    });
-    hex.addEventListener('input', () => {
-      const v = hex.value.trim();
-      if (/^#[0-9a-fA-F]{6}$/.test(v)) {
-        color.value = v;
-        color.removeAttribute('data-unset');
-      }
-      markDirty();
-    });
-    img.addEventListener('input', () => { markDirty(); updateOverlayUI(); });
-    ovr.addEventListener('input', () => {
-      ovrVal.textContent = ovr.value + '%';
-      markDirty();
-    });
-
-    // Bouton Valider → applique tout d'un coup
-    save.addEventListener('click', () => {
-      const colorVal = (hex.value || '').trim();
-      const imgVal = (img.value || '').trim();
-      const ovrV = (parseInt(ovr.value, 10) || 0) / 100;
-      if (colorVal && !/^#[0-9a-fA-F]{6}$/.test(colorVal)) {
-        showAlert('alert-sectioncolors', '⚠ Couleur invalide (format attendu : #RRGGBB).', 'error');
-        return;
-      }
-      // setSectionStyle fait un merge partiel ; pour bien remplacer (et permettre de vider),
-      // on supprime d'abord puis on réécrit
-      FoyerDB.clearSectionStyle(page, id);
-      const next = {};
-      if (colorVal) next.backgroundColor = colorVal;
-      if (imgVal)   next.backgroundImage = imgVal;
-      if (imgVal && ovrV > 0) next.overlay = ovrV;
-      if (Object.keys(next).length) FoyerDB.setSectionStyle(page, id, next);
-      // Feedback visuel
-      row.removeAttribute('data-dirty');
-      save.textContent = '✓ Enregistré';
-      save.style.background = '#3a8a52';
-      setTimeout(() => {
-        save.textContent = '✓ Valider';
-        save.style.background = '';
-      }, 1800);
-    });
-
-    clear.addEventListener('click', () => {
-      FoyerDB.clearSectionStyle(page, id);
-      color.value = '#ffffff'; color.setAttribute('data-unset','1');
-      hex.value = ''; img.value = ''; ovr.value = 0;
-      ovrVal.textContent = '0%';
-      row.removeAttribute('data-dirty');
-      updateOverlayUI();
-    });
-  });
-}
-
-document.getElementById('btn-sectioncolors-reset')?.addEventListener('click', () => {
-  if (!confirm('Réinitialiser TOUTES les couleurs de section ? Toutes les sections reviendront à leur style par défaut.')) return;
-  FoyerDB.clearAllSectionStyles();
-  renderSectionColors();
-  showAlert('alert-sectioncolors', '✓ Toutes les couleurs ont été réinitialisées.');
-});
 
 /* ══════════════════════════════════════════════════ */
 /* ── Médiathèque centralisée ──────────────────────── */
