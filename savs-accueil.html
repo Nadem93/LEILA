@@ -7,22 +7,13 @@
 <meta name="description" content="Le SAVS accompagne 42 adultes en situation de handicap psychique et/ou mental vivant à domicile, à Stains.">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/leila.css">
+<link rel="stylesheet" href="css/leila-v2.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   .hero.svc-savs { background: linear-gradient(135deg, #ecf3e8, #d4e6cc); }
   .hero.svc-savs h1 .accent { color: var(--svc-savs-dark); font-style: italic; }
-  /* Auto-contraste pour image admin */
-  .hero.svc-savs[data-section-styled="1"][style*="url("] { color: white; }
-  .hero.svc-savs[data-section-styled="1"][style*="url("] h1,
-  .hero.svc-savs[data-section-styled="1"][style*="url("] .hero-lead,
-  .hero.svc-savs[data-section-styled="1"][style*="url("] .hero-tag,
-  .hero.svc-savs[data-section-styled="1"][style*="url("] .hero-stats strong,
-  .hero.svc-savs[data-section-styled="1"][style*="url("] .hero-stats span { color: white; }
-  .hero.svc-savs[data-section-styled="1"][style*="url("] h1 .accent { color: #ffd9a6; }
-  .hero.svc-savs[data-section-styled="1"][style*="url("] .hero-tag { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); }
-  .hero.svc-savs[data-section-styled="1"][style*="url("] .btn-ghost { color: white; border-color: rgba(255,255,255,0.6); }
   .btn-svc { background: var(--svc-savs); color: white; }
   .btn-svc:hover { background: var(--svc-savs-dark); }
   .accomp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 2rem; }
@@ -74,7 +65,7 @@
 <main id="main-content">
 
 <!-- Hero -->
-<section class="hero svc-savs" id="hero">
+<section class="hero svc-savs">
   <div class="container hero-inner">
     <div class="hero-tag">Depuis janvier 2016 · Service d'Accompagnement à la Vie Sociale</div>
     <h1>Accompagner vers <span class="accent">l'autonomie</span> et l'inclusion sociale.</h1>
@@ -153,7 +144,7 @@
 </section>
 
 <!-- Accompagnement parentalité + logement -->
-<section class="section" id="parentalite-logement">
+<section class="section">
   <div class="container two-col">
     <div class="two-col-text">
       <span class="eyebrow">Spécificités</span>
@@ -185,7 +176,7 @@
 </section>
 
 <!-- Projet AUVI -->
-<section class="section section-alt" id="projet-auvi">
+<section class="section section-alt">
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow">Recherche participative</span>
@@ -216,7 +207,7 @@
 </section>
 
 <!-- Galerie -->
-<section class="section section-alt" id="galerie">
+<section class="section section-alt">
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow">Galerie</span>
@@ -249,7 +240,7 @@
 </section>
 
 <!-- FAQ -->
-<section class="section" id="faq">
+<section class="section">
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow">Questions fréquentes</span>
@@ -317,7 +308,6 @@
 </footer>
 
 <script src="js/db.js"></script>
-<script src="js/section-styles.js"></script>
 <script src="js/branding.js"></script>
 <script src="js/custom-sections.js"></script>
 <script src="js/script.js"></script>
@@ -471,5 +461,6 @@
   window.addEventListener('focus', renderAll);
 })();
 </script>
+  <script src="js/section-bgs-runtime.js"></script>
 </body>
 </html>

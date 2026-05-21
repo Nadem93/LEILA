@@ -7,22 +7,13 @@
 <meta name="description" content="L'EMP Henri Wallon est un Externat Médico-Pédagogique de l'association LEILA, à Stains, pour enfants en situation de handicap.">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/leila.css">
+<link rel="stylesheet" href="css/leila-v2.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   .hero.svc-emp { background: linear-gradient(135deg, #f3ebfa, #e2d0f0); }
   .hero.svc-emp h1 .accent { color: var(--svc-emp-dark); font-style: italic; }
-  /* Auto-contraste pour image admin */
-  .hero.svc-emp[data-section-styled="1"][style*="url("] { color: white; }
-  .hero.svc-emp[data-section-styled="1"][style*="url("] h1,
-  .hero.svc-emp[data-section-styled="1"][style*="url("] .hero-lead,
-  .hero.svc-emp[data-section-styled="1"][style*="url("] .hero-tag,
-  .hero.svc-emp[data-section-styled="1"][style*="url("] .hero-stats strong,
-  .hero.svc-emp[data-section-styled="1"][style*="url("] .hero-stats span { color: white; }
-  .hero.svc-emp[data-section-styled="1"][style*="url("] h1 .accent { color: #ffd9a6; }
-  .hero.svc-emp[data-section-styled="1"][style*="url("] .hero-tag { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); }
-  .hero.svc-emp[data-section-styled="1"][style*="url("] .btn-ghost { color: white; border-color: rgba(255,255,255,0.6); }
   .btn-svc { background: var(--svc-emp); color: white; }
   .btn-svc:hover { background: var(--svc-emp-dark); }
   .placeholder-card {
@@ -35,33 +26,6 @@
   }
   .placeholder-card strong { color: var(--svc-emp-dark); display: block; margin-bottom: .5rem; }
   .placeholder-card .icon { font-size: 2.5rem; display: block; margin-bottom: .8rem; }
-
-  /* ── Bandes latérales décoratives (fournitures EMP) ───
-     L'image se trouve dans images/emp-fournitures.png (à fournir).
-     Les bandes sont :
-       - 70 px de large
-       - fixées au scroll (toujours visibles)
-       - cachées sous 1100 px (mobile / tablette)
-  ──────────────────────────────────────────────────────── */
-  body::before,
-  body::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    width: 70px;
-    background-image: url('images/emp-fournitures.png');
-    background-repeat: repeat;
-    background-size: 70px auto;
-    opacity: 0.55;
-    pointer-events: none;
-    z-index: 1;
-  }
-  body::before { left: 0; }
-  body::after  { right: 0; }
-  @media (max-width: 1100px) {
-    body::before, body::after { display: none; }
-  }
 </style>
 </head>
 <body>
@@ -105,7 +69,7 @@
 <main id="main-content">
 
 <!-- Hero EMP -->
-<section class="hero svc-emp" id="hero">
+<section class="hero svc-emp">
   <div class="container hero-inner">
     <div class="hero-tag">Externat Médico-Pédagogique · Association LEILA</div>
     <h1>L'EMP <span class="accent">Henri Wallon</span></h1>
@@ -129,7 +93,7 @@
 </section>
 
 <!-- Bandeau d'information temporaire -->
-<section class="section" id="bandeau-info" style="padding-top:2rem; padding-bottom:0;">
+<section class="section" style="padding-top:2rem; padding-bottom:0;">
   <div class="container">
     <div style="background: linear-gradient(90deg, rgba(155,109,196,.08), rgba(155,109,196,.04)); border-left: 4px solid var(--svc-emp); padding: 1.4rem 1.8rem; border-radius: 12px;">
       <strong style="color: var(--svc-emp-dark);">📋 Page en cours de complétion</strong>
@@ -175,7 +139,7 @@
 </section>
 
 <!-- Public accueilli -->
-<section class="section section-alt" id="public-accueilli">
+<section class="section section-alt">
   <div class="container two-col">
     <div class="two-col-text">
       <span class="eyebrow">Public accueilli</span>
@@ -204,7 +168,7 @@
 </section>
 
 <!-- Projet pédagogique -->
-<section class="section" id="projet-pedagogique">
+<section class="section">
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow">Projet pédagogique</span>
@@ -232,7 +196,7 @@
 </section>
 
 <!-- Galerie -->
-<section class="section" id="galerie">
+<section class="section">
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow">Galerie</span>
@@ -265,7 +229,7 @@
 </section>
 
 <!-- FAQ -->
-<section class="section section-alt" id="faq">
+<section class="section section-alt">
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow">Questions fréquentes</span>
@@ -334,7 +298,6 @@
 </footer>
 
 <script src="js/db.js"></script>
-<script src="js/section-styles.js"></script>
 <script src="js/branding.js"></script>
 <script src="js/custom-sections.js"></script>
 <script src="js/script.js"></script>
@@ -488,5 +451,6 @@
   window.addEventListener('focus', renderAll);
 })();
 </script>
+  <script src="js/section-bgs-runtime.js"></script>
 </body>
 </html>

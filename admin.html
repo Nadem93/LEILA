@@ -1280,6 +1280,9 @@ tr:hover td { background: var(--blue-faint); }
       <button class="nav-item" data-page="pages">
         <span class="nav-icon">📄</span> Pages personnalisées
       </button>
+      <button class="nav-item" data-page="section-bgs">
+        <span class="nav-icon">🖼️</span> Images de fond
+      </button>
       <button class="nav-item" data-page="team">
         <span class="nav-icon">👥</span> Équipe
       </button>
@@ -1825,6 +1828,24 @@ tr:hover td { background: var(--blue-faint); }
       </div>
       <div id="alert-pages" class="alert"></div>
       <div id="pages-list-wrap"></div>
+    </div>
+
+    <!-- ── Images de fond ── -->
+    <div class="admin-page" id="page-section-bgs">
+      <div class="page-hd">
+        <div>
+          <h1>🖼️ Images de fond</h1>
+          <p>Choisis une image de fond pour chaque section des pages du site. Les images proviennent de ta médiathèque.</p>
+        </div>
+      </div>
+
+      <div class="sbg-toolbar">
+        <label for="sbg-page-select">Page à éditer :</label>
+        <select id="sbg-page-select"></select>
+        <a href="#" id="sbg-view-page" target="_blank" class="btn btn-secondary btn-sm" style="margin-left:auto;">Voir la page →</a>
+      </div>
+
+      <div id="sbg-sections-list"></div>
     </div>
 
     <!-- ── Marque & identité ── -->
@@ -2442,6 +2463,7 @@ tr:hover td { background: var(--blue-faint); }
 <script src="js/admin-services.js"></script>
 <script src="js/admin-v2.js" defer></script>
 <script src="js/admin-refresh.js" defer></script>
+<script src="js/section-bgs-admin.js" defer></script>
 <script>
 'use strict';
 

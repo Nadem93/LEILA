@@ -7,47 +7,13 @@
 <meta name="description" content="Le Foyer d'hébergement Les Trois Rivières accueille 45 adultes en situation de handicap travaillant en ESAT, à Stains (93240).">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/leila.css">
+<link rel="stylesheet" href="css/leila-v2.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
 <style>
   .hero.svc-foyer-hero { background: linear-gradient(135deg, #e6f2f6, #c4dde6); }
   .hero.svc-foyer-hero h1 .accent { color: var(--svc-foyer-dark, #1d4f64); font-style: italic; }
-  /* ── Auto-contraste : si une image de fond est appliquée via l'admin,
-       le texte passe en blanc et un voile sombre est ajouté pour la lisibilité.
-       Ce comportement se déclenche dès que le script section-styles.js pose
-       l'attribut data-section-styled="1" + qu'une image est définie. */
-  .hero.svc-foyer-hero[data-section-styled="1"][style*="url("] { color: white; }
-  .hero.svc-foyer-hero[data-section-styled="1"][style*="url("] h1,
-  .hero.svc-foyer-hero[data-section-styled="1"][style*="url("] .hero-lead,
-  .hero.svc-foyer-hero[data-section-styled="1"][style*="url("] .hero-tag,
-  .hero.svc-foyer-hero[data-section-styled="1"][style*="url("] .hero-stats strong,
-  .hero.svc-foyer-hero[data-section-styled="1"][style*="url("] .hero-stats span {
-    color: white;
-    text-shadow: 0 2px 6px rgba(0,0,0,.65), 0 0 18px rgba(0,0,0,.4);
-  }
-  .hero.svc-foyer-hero[data-section-styled="1"][style*="url("] h1 .accent { color: #ffd9a6; }
-  .hero.svc-foyer-hero[data-section-styled="1"][style*="url("] .hero-tag {
-    background: rgba(0,0,0,0.45);
-    border: 1px solid rgba(255,255,255,0.35);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-  }
-  .hero.svc-foyer-hero[data-section-styled="1"][style*="url("] .hero-stats > div {
-    background: rgba(0,0,0,0.35);
-    padding: .8rem 1rem;
-    border-radius: 10px;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-  }
-  .hero.svc-foyer-hero[data-section-styled="1"][style*="url("] .btn-ghost {
-    color: white;
-    border-color: rgba(255,255,255,0.7);
-    background: rgba(0,0,0,0.25);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-  }
-  .hero.svc-foyer-hero[data-section-styled="1"][style*="url("] .btn-ghost:hover { background: rgba(0,0,0,0.45); }
   .btn-svc { background: var(--svc-foyer); color: white; }
   .btn-svc:hover { background: var(--svc-foyer-dark, #1d4f64); }
   .hebergement-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 2rem; }
@@ -99,7 +65,7 @@
 <main id="main-content">
 
 <!-- Hero Foyer -->
-<section class="hero svc-foyer-hero" id="hero">
+<section class="hero svc-foyer-hero">
   <div class="container hero-inner">
     <div class="hero-tag">Depuis 2005 · 20 ans d'engagement · Foyer d'hébergement</div>
     <h1>Un foyer où chacun trouve <span class="accent">sa place</span>.</h1>
@@ -155,7 +121,7 @@
 </section>
 
 <!-- Public accueilli -->
-<section class="section section-alt" id="public-accueilli">
+<section class="section section-alt">
   <div class="container two-col">
     <div class="two-col-text">
       <span class="eyebrow">Public accueilli</span>
@@ -223,7 +189,7 @@
 </section>
 
 <!-- Galerie -->
-<section class="section" id="galerie">
+<section class="section">
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow">Galerie</span>
@@ -256,7 +222,7 @@
 </section>
 
 <!-- FAQ -->
-<section class="section section-alt" id="faq">
+<section class="section section-alt">
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow">Questions fréquentes</span>
@@ -326,7 +292,6 @@
 </footer>
 
 <script src="js/db.js"></script>
-<script src="js/section-styles.js"></script>
 <script src="js/branding.js"></script>
 <script src="js/custom-sections.js"></script>
 <script src="js/script.js"></script>
@@ -481,5 +446,6 @@
   window.addEventListener('focus', renderAll);
 })();
 </script>
+  <script src="js/section-bgs-runtime.js"></script>
 </body>
 </html>

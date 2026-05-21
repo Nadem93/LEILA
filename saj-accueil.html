@@ -7,22 +7,13 @@
 <meta name="description" content="Le SAJ est un Service d'Accueil de Jour pour 15 adultes en situation de handicap psychique et/ou mental, à Stains.">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/leila.css">
+<link rel="stylesheet" href="css/leila-v2.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   .hero.svc-saj { background: linear-gradient(135deg, #fff5e8, #fbe5cc); }
   .hero.svc-saj h1 .accent { color: var(--svc-saj-dark); font-style: italic; }
-  /* Auto-contraste pour image admin */
-  .hero.svc-saj[data-section-styled="1"][style*="url("] { color: white; }
-  .hero.svc-saj[data-section-styled="1"][style*="url("] h1,
-  .hero.svc-saj[data-section-styled="1"][style*="url("] .hero-lead,
-  .hero.svc-saj[data-section-styled="1"][style*="url("] .hero-tag,
-  .hero.svc-saj[data-section-styled="1"][style*="url("] .hero-stats strong,
-  .hero.svc-saj[data-section-styled="1"][style*="url("] .hero-stats span { color: white; }
-  .hero.svc-saj[data-section-styled="1"][style*="url("] h1 .accent { color: #ffd9a6; }
-  .hero.svc-saj[data-section-styled="1"][style*="url("] .hero-tag { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); }
-  .hero.svc-saj[data-section-styled="1"][style*="url("] .btn-ghost { color: white; border-color: rgba(255,255,255,0.6); }
   .btn-svc { background: var(--svc-saj); color: white; }
   .btn-svc:hover { background: var(--svc-saj-dark); }
   .ateliers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 2rem; }
@@ -74,7 +65,7 @@
 <main id="main-content">
 
 <!-- Hero SAJ -->
-<section class="hero svc-saj" id="hero">
+<section class="hero svc-saj">
   <div class="container hero-inner">
     <div class="hero-tag">Depuis avril 2018 · Service d'Accueil de Jour</div>
     <h1>Un accueil collectif, <span class="accent">créatif</span> et participatif.</h1>
@@ -130,7 +121,7 @@
 </section>
 
 <!-- Public accueilli -->
-<section class="section section-alt" id="public-accueilli">
+<section class="section section-alt">
   <div class="container two-col">
     <div class="two-col-text">
       <span class="eyebrow">Public accueilli</span>
@@ -188,7 +179,7 @@
 </section>
 
 <!-- Vie collective -->
-<section class="section section-alt" id="vie-collective">
+<section class="section section-alt">
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow">Le quotidien</span>
@@ -218,7 +209,7 @@
 </section>
 
 <!-- Galerie -->
-<section class="section section-alt" id="galerie">
+<section class="section section-alt">
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow">Galerie</span>
@@ -251,7 +242,7 @@
 </section>
 
 <!-- FAQ -->
-<section class="section" id="faq">
+<section class="section">
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow">Questions fréquentes</span>
@@ -319,7 +310,6 @@
 </footer>
 
 <script src="js/db.js"></script>
-<script src="js/section-styles.js"></script>
 <script src="js/branding.js"></script>
 <script src="js/custom-sections.js"></script>
 <script src="js/script.js"></script>
@@ -473,5 +463,6 @@
   window.addEventListener('focus', renderAll);
 })();
 </script>
+  <script src="js/section-bgs-runtime.js"></script>
 </body>
 </html>
