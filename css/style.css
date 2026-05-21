@@ -1391,13 +1391,6 @@ ul { list-style: none; }
   font-size: 1.5rem;
   margin: 0 auto 1rem;
   color: white;
-  overflow: hidden;
-}
-.team-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 }
 
 .team-role {
