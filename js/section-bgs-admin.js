@@ -167,7 +167,10 @@
 
                 <div class="sbg-actions">
                   <button class="btn btn-primary btn-sm" data-action="pick">
-                    ${hasImg ? '✏️ Changer' : '📁 Choisir une image'}
+                    📁 Médiathèque
+                  </button>
+                  <button class="btn btn-secondary btn-sm" data-action="upload">
+                    📤 Téléverser
                   </button>
                   ${hasImg ? `
                     <button class="btn btn-danger btn-sm" data-action="remove">🗑 Retirer</button>
@@ -192,6 +195,41 @@
           updateConfig(file, idx, { url });
           renderSectionsList(file);
         });
+      });
+      row.querySelector('[data-action="upload"]')?.addEventListener('click', () => {
+        // Téléversement direct sans passer par la médiathèque
+        const inp = document.createElement('input');
+        inp.type = 'file';
+        inp.accept = 'image/*';
+        inp.onchange = async () => {
+          if (!inp.files.length) return;
+          const f = inp.files[0];
+          if (f.size > 5 * 1024 * 1024) {
+            alert('Image trop volumineuse (max 5 Mo).');
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            const dataUrl = e.target.result;
+            // Tenter d'enregistrer aussi dans la médiathèque pour réutilisation future
+            try {
+              if (window.FoyerDB && typeof window.FoyerDB.saveMediaItem === 'function') {
+                window.FoyerDB.saveMediaItem({
+                  id: 'sbg-' + Date.now(),
+                  name: f.name,
+                  url: dataUrl,
+                  size: f.size,
+                  type: f.type,
+                  createdAt: new Date().toISOString()
+                });
+              }
+            } catch (err) { /* silencieux */ }
+            updateConfig(file, idx, { url: dataUrl });
+            renderSectionsList(file);
+          };
+          reader.readAsDataURL(f);
+        };
+        inp.click();
       });
       row.querySelector('[data-action="remove"]')?.addEventListener('click', () => {
         if (!confirm('Retirer l\'image de fond de cette section ?')) return;
