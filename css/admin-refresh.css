@@ -1035,6 +1035,54 @@ body {
 }
 
 /* ── 20. Couleurs du texte ───────────────────────────── */
+.tc-toolbar {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin-bottom: 1.5rem;
+  background: white;
+  border: 1px solid var(--av2-border);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  box-shadow: var(--av2-shadow-sm);
+  flex-wrap: wrap;
+}
+.tc-toolbar label {
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--av2-text-soft);
+}
+.tc-toolbar select#tc-page-select {
+  flex: 0 1 320px;
+  background: var(--av2-bg-soft);
+  border: 1px solid var(--av2-border);
+  border-radius: 8px;
+  padding: .55rem .8rem;
+  font-size: .9rem;
+  font-family: inherit;
+  color: var(--av2-text);
+}
+.tc-toolbar select#tc-page-select:focus {
+  outline: none;
+  background: white;
+  border-color: var(--av2-accent);
+  box-shadow: 0 0 0 3px rgba(45,105,96,.12);
+}
+.tc-status {
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--av2-text-faint);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--av2-bg-soft);
+  border: 1px solid var(--av2-border-soft);
+}
+.tc-status.active {
+  background: var(--av2-accent-tint);
+  color: var(--av2-accent);
+  border-color: rgba(45,105,96,.18);
+}
+
 .tc-grid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
@@ -1130,6 +1178,19 @@ body {
   margin-top: 1.2rem;
   padding-top: 1rem;
   border-top: 1px solid var(--av2-border-soft);
+  display: flex;
+  gap: .6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.tc-copy-select {
+  background: white;
+  border: 1px solid var(--av2-border);
+  border-radius: 6px;
+  padding: .35rem .65rem;
+  font-size: .8rem;
+  font-family: inherit;
+  color: var(--av2-text-soft);
 }
 
 /* Preview */

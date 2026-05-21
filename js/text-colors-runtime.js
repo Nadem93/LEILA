@@ -1,7 +1,11 @@
 /* ============================================================
    text-colors-runtime.js
-   Applique les couleurs de texte personnalisées sur les pages
-   publiques. À charger sur toutes les pages.
+   Applique les couleurs de texte personnalisées par page.
+   Stockage : localStorage["leila_text_colors"] = {
+     "index.html": { body, heading, link, linkHover, accent },
+     "foyer-accueil.html": { ... },
+     ...
+   }
    ============================================================ */
 (function () {
   'use strict';
@@ -12,6 +16,12 @@
   function load() {
     try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }
     catch (e) { return {}; }
+  }
+
+  function getPageKey() {
+    let p = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    if (!p || p === '/' || p === '') p = 'index.html';
+    return p;
   }
 
   function buildCss(c) {
@@ -26,7 +36,6 @@
       rules.push(`h1, h2, h3, h4, h5, h6 {
         color: ${c.heading} !important;
       }`);
-      // Heading inside hero sections sometimes use .accent — keep accent color separate
     }
     if (c.link) {
       rules.push(`a:not(.btn):not(.nav-item):not(.service-card):not([class*="card"]):not(.hero-actions a) {
@@ -37,7 +46,7 @@
       }`);
     }
     if (c.accent) {
-      rules.push(`.accent, .hero-tag, h1 .accent, h2 .accent, h3 .accent {
+      rules.push(`.accent, .hero-tag, h1 .accent, h2 .accent, h3 .accent, .eyebrow {
         color: ${c.accent} !important;
       }`);
     }
@@ -46,7 +55,10 @@
   }
 
   function apply() {
-    const c = load();
+    const all = load();
+    const page = getPageKey();
+    const c = all[page] || {};
+
     let style = document.getElementById(STYLE_ID);
     const css = buildCss(c);
 
@@ -58,7 +70,6 @@
     if (!style) {
       style = document.createElement('style');
       style.id = STYLE_ID;
-      // Inject as LAST element of <head> to maximize override priority
       document.head.appendChild(style);
     }
     style.textContent = css;
@@ -70,10 +81,9 @@
     apply();
   }
 
-  // Re-applique sur changement (preview live)
   window.addEventListener('storage', e => {
     if (e.key === STORE_KEY) apply();
   });
 
-  window.LeilaTextColors = { apply, load };
+  window.LeilaTextColors = { apply, load, getPageKey };
 })();
