@@ -1033,3 +1033,193 @@ body {
   .sbg-preview { min-height: 110px; }
   .sbg-controls { grid-template-columns: 1fr; }
 }
+
+/* ── 20. Couleurs du texte ───────────────────────────── */
+.tc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 1.5rem;
+}
+@media (max-width: 1100px) {
+  .tc-grid { grid-template-columns: 1fr; }
+}
+
+.tc-section-title {
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--av2-text-faint);
+  margin: 0 0 .8rem;
+}
+
+.tc-form {
+  background: white;
+  border: 1px solid var(--av2-border);
+  border-radius: 12px;
+  padding: 1.3rem 1.4rem;
+  box-shadow: var(--av2-shadow-sm);
+}
+
+.tc-field {
+  margin-bottom: .9rem;
+}
+.tc-field:last-of-type {
+  margin-bottom: 0;
+}
+.tc-field label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+}
+.tc-label-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tc-label-head strong {
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--av2-text);
+  letter-spacing: -.01em;
+}
+.tc-label-head small {
+  font-size: .76rem;
+  color: var(--av2-text-faint);
+  font-weight: 400;
+}
+
+.tc-input {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-shrink: 0;
+}
+.tc-input input[type="color"] {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--av2-border);
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+}
+.tc-input input[type="color"]::-webkit-color-swatch-wrapper { padding: 4px; }
+.tc-input input[type="color"]::-webkit-color-swatch { border: none; border-radius: 4px; }
+.tc-input input.tc-hex {
+  width: 90px;
+  background: var(--av2-bg-soft);
+  border: 1px solid var(--av2-border);
+  border-radius: 6px;
+  padding: .42rem .55rem;
+  font-size: .82rem;
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  color: var(--av2-text);
+  text-transform: lowercase;
+}
+.tc-input input.tc-hex:focus {
+  outline: none;
+  background: white;
+  border-color: var(--av2-accent);
+  box-shadow: 0 0 0 3px rgba(45,105,96,.12);
+}
+
+.tc-actions {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--av2-border-soft);
+}
+
+/* Preview */
+.tc-preview-wrap {
+  position: sticky;
+  top: calc(var(--header-h) + 1rem);
+  align-self: start;
+}
+.tc-preview {
+  background: white;
+  border: 1px solid var(--av2-border);
+  border-radius: 12px;
+  padding: 1.6rem 1.8rem;
+  box-shadow: var(--av2-shadow-sm);
+  min-height: 260px;
+}
+.tc-tag {
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-bottom: .8rem;
+}
+.tc-preview h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  margin-bottom: .8rem;
+  line-height: 1.2;
+}
+.tc-preview h1 em {
+  font-style: italic;
+  font-weight: 700;
+}
+.tc-preview h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -.015em;
+  margin: 1.1rem 0 .55rem;
+}
+.tc-preview p {
+  font-size: .92rem;
+  line-height: 1.55;
+  margin-bottom: .8rem;
+}
+.tc-preview a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 500;
+}
+
+/* Presets */
+.tc-presets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem;
+}
+.tc-preset {
+  background: white;
+  border: 1px solid var(--av2-border);
+  border-radius: 10px;
+  padding: .65rem .8rem;
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: all .14s;
+}
+.tc-preset:hover {
+  border-color: var(--av2-accent);
+  background: var(--av2-accent-tint);
+  transform: translateY(-1px);
+  box-shadow: var(--av2-shadow-sm);
+}
+.tc-preset-swatches {
+  display: inline-flex;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--av2-border);
+}
+.tc-preset-swatches span {
+  width: 12px;
+  height: 22px;
+  display: inline-block;
+}
+.tc-preset-name {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--av2-text);
+}

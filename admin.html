@@ -1283,6 +1283,9 @@ tr:hover td { background: var(--blue-faint); }
       <button class="nav-item" data-page="section-bgs">
         <span class="nav-icon">🖼️</span> Images de fond
       </button>
+      <button class="nav-item" data-page="text-colors">
+        <span class="nav-icon">🎨</span> Couleurs du texte
+      </button>
       <button class="nav-item" data-page="team">
         <span class="nav-icon">👥</span> Équipe
       </button>
@@ -1831,8 +1834,7 @@ tr:hover td { background: var(--blue-faint); }
     </div>
 
     <!-- ── Images de fond ── -->
-    <div class="admin-page" id="page-section-bgs">
-      <div class="page-hd">
+    <div class="admin-page" id="page-section-bgs">      <div class="page-hd">
         <div>
           <h1>🖼️ Images de fond</h1>
           <p>Choisis une image de fond pour chaque section des pages du site. Les images proviennent de ta médiathèque.</p>
@@ -1846,6 +1848,17 @@ tr:hover td { background: var(--blue-faint); }
       </div>
 
       <div id="sbg-sections-list"></div>
+    </div>
+
+    <!-- ── Couleurs du texte ── -->
+    <div class="admin-page" id="page-text-colors">
+      <div class="page-hd">
+        <div>
+          <h1>🎨 Couleurs du texte</h1>
+          <p>Modifie les couleurs des textes (titres, paragraphes, liens, accents) sur toutes les pages du site.</p>
+        </div>
+      </div>
+      <div id="tc-form-wrap"></div>
     </div>
 
     <!-- ── Marque & identité ── -->
@@ -2464,6 +2477,7 @@ tr:hover td { background: var(--blue-faint); }
 <script src="js/admin-v2.js" defer></script>
 <script src="js/admin-refresh.js" defer></script>
 <script src="js/section-bgs-admin.js" defer></script>
+<script src="js/text-colors-admin.js" defer></script>
 <script>
 'use strict';
 
