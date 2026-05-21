@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ── Reset & tokens ───────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -985,6 +984,7 @@ tr:hover td { background: var(--blue-faint); }
   display: flex;
   gap: 0.3rem;
   flex-wrap: wrap;
+  align-items: center;
   padding: 0.5rem 0.7rem;
   background: #f6f9fb;
   border: 1.5px solid var(--border);
@@ -1004,6 +1004,69 @@ tr:hover td { background: var(--blue-faint); }
   transition: var(--trans);
 }
 .rte-btn:hover { background: var(--blue-light); color: var(--blue); border-color: var(--blue); }
+
+/* ── Sélecteur de police inline ─────────────────── */
+.rte-font {
+  padding: .3rem .5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: white;
+  font-size: .82rem;
+  font-weight: 600;
+  color: #4e5c69;
+  cursor: pointer;
+  max-width: 175px;
+  font-family: inherit;
+  transition: var(--trans);
+}
+.rte-font:hover { border-color: var(--blue); color: var(--blue); }
+.rte-font:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,104,128,.12); }
+
+/* ── Séparateur vertical dans la toolbar ────────── */
+.rte-sep {
+  display: inline-block;
+  width: 1px;
+  height: 20px;
+  background: #d8e2ea;
+  margin: 0 .15rem;
+}
+
+/* ── Pastilles de couleur du texte ──────────────── */
+.rte-colors {
+  display: inline-flex;
+  gap: .3rem;
+  align-items: center;
+  padding: 0 .15rem;
+}
+.rte-color {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.2);
+  cursor: pointer;
+  padding: 0;
+  display: inline-block;
+  transition: transform .12s, box-shadow .12s;
+  position: relative;
+  overflow: hidden;
+}
+.rte-color:hover {
+  transform: scale(1.18);
+  box-shadow: 0 0 0 1px var(--blue), 0 2px 6px rgba(37,104,128,.25);
+}
+.rte-color-pick {
+  background: conic-gradient(from 220deg, #c94747, #d9924a, #d4880a, #4a8a37, #256880, #7c4dab, #c94747);
+}
+.rte-color-pick input[type="color"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
 
 .rte-area {
   border: 1.5px solid var(--border);
@@ -1137,7 +1200,6 @@ tr:hover td { background: var(--blue-faint); }
 }
 </style>
 <link rel="stylesheet" href="css/admin-v2.css">
-<link rel="stylesheet" href="css/admin-refresh.css">
 </head>
 <body>
 
@@ -1181,13 +1243,6 @@ tr:hover td { background: var(--blue-faint); }
       Association LEILA
       <span class="header-badge">Admin</span>
     </div>
-
-    <div class="refresh-search">
-      <input type="text" id="refresh-search-input" placeholder="Rechercher une section (article, agenda, photos…)" autocomplete="off">
-      <kbd>⌘K</kbd>
-      <div class="refresh-search-results" id="refresh-search-results"></div>
-    </div>
-
     <div class="header-right">
       <div class="service-selector" role="tablist" aria-label="Service à administrer">
         <button class="service-pill" data-svc="all" type="button" title="Tous services">
@@ -1224,95 +1279,74 @@ tr:hover td { background: var(--blue-faint); }
 
   <!-- Sidebar -->
   <aside class="admin-sidebar">
+    <div class="nav-section-label">Navigation</div>
+    <button class="nav-item active" data-page="dashboard">
+      <span class="nav-icon">📊</span> Tableau de bord
+    </button>
 
-    <div class="nav-pinned">
-      <button class="nav-item active" data-page="dashboard">
-        <span class="nav-icon">🏠</span> Accueil
-      </button>
-    </div>
+    <div class="nav-section-label">Contenu</div>
+    <button class="nav-item" data-page="articles">
+      <span class="nav-icon">📰</span> Actualités
+    </button>
+    <button class="nav-item" data-page="testimonials">
+      <span class="nav-icon">💬</span> Témoignages
+    </button>
 
-    <div class="nav-group">
-      <div class="nav-group-title">Publier</div>
-      <button class="nav-item" data-page="articles">
-        <span class="nav-icon">📰</span> Actualités
-      </button>
-      <button class="nav-item" data-page="events">
-        <span class="nav-icon">📅</span> Agenda
-      </button>
-      <button class="nav-item" data-page="photos">
-        <span class="nav-icon">🖼️</span> Photos
-      </button>
-      <button class="nav-item" data-page="media">
-        <span class="nav-icon">🎞️</span> Vidéos
-      </button>
-      <button class="nav-item" data-page="testimonials">
-        <span class="nav-icon">💬</span> Témoignages
-      </button>
-      <button class="nav-item" data-page="documents">
-        <span class="nav-icon">📁</span> Documents
-      </button>
-    </div>
+    <button class="nav-item" data-page="documents">
+      <span class="nav-icon">📁</span> Documents
+    </button>
+    <button class="nav-item" data-page="photos">
+      <span class="nav-icon">🖼️</span> Galerie photos
+    </button>
+    <button class="nav-item" data-page="media">
+      <span class="nav-icon">🎞️</span> Médiathèque
+    </button>
+    <button class="nav-item" data-page="events">
+      <span class="nav-icon">📅</span> Agenda
+    </button>
+    <button class="nav-item" data-page="team">
+      <span class="nav-icon">👥</span> Équipe
+    </button>
+    <button class="nav-item" data-page="partners">
+      <span class="nav-icon">🏢</span> Partenaires
+    </button>
+    <button class="nav-item" data-page="contact">
+      <span class="nav-icon">📞</span> Contact &amp; FAQ
+    </button>
 
-    <div class="nav-group">
-      <div class="nav-group-title">Demandes</div>
-      <button class="nav-item" data-page="inbox">
-        <span class="nav-icon">📨</span> Boîte de réception
-        <span class="nav-badge nav-badge-alert" id="inbox-badge" style="display:none;">0</span>
-      </button>
-      <button class="nav-item" data-page="admissions">
-        <span class="nav-icon">📋</span> Admissions
-        <span class="nav-badge" id="admissions-badge">0</span>
-      </button>
-      <button class="nav-item" data-page="applications">
-        <span class="nav-icon">🎓</span> Candidatures stage
-        <span class="nav-badge" id="applications-badge">0</span>
-      </button>
-    </div>
+    <div class="nav-section-label">Demandes</div>
+    <button class="nav-item" data-page="inbox">
+      <span class="nav-icon">📨</span> Boîte de réception
+      <span class="nav-badge nav-badge-alert" id="inbox-badge" style="display:none;">0</span>
+    </button>
+    <button class="nav-item" data-page="admissions">
+      <span class="nav-icon">📋</span> Admissions
+      <span class="nav-badge" id="admissions-badge">0</span>
+    </button>
+    <button class="nav-item" data-page="applications">
+      <span class="nav-icon">🎓</span> Candidatures stage
+      <span class="nav-badge" id="applications-badge">0</span>
+    </button>
 
-    <div class="nav-group">
-      <div class="nav-group-title">Le site</div>
-      <button class="nav-item" data-page="pagecontent">
-        <span class="nav-icon">✏️</span> Textes des pages
-      </button>
-      <button class="nav-item" data-page="assopage">
-        <span class="nav-icon">🏠</span> Page d'accueil asso
-      </button>
-      <button class="nav-item" data-page="pages">
-        <span class="nav-icon">📄</span> Pages personnalisées
-      </button>
-      <button class="nav-item" data-page="section-bgs">
-        <span class="nav-icon">🖼️</span> Images de fond
-      </button>
-      <button class="nav-item" data-page="text-colors">
-        <span class="nav-icon">🎨</span> Couleurs du texte
-      </button>
-      <button class="nav-item" data-page="team">
-        <span class="nav-icon">👥</span> Équipe
-      </button>
-      <button class="nav-item" data-page="partners">
-        <span class="nav-icon">🤝</span> Partenaires
-      </button>
-      <button class="nav-item" data-page="contact">
-        <span class="nav-icon">📞</span> Contact &amp; FAQ
-      </button>
-    </div>
-
-    <div class="nav-group">
-      <div class="nav-group-title">Réglages</div>
-      <button class="nav-item" data-page="branding">
-        <span class="nav-icon">🎨</span> Apparence du site
-      </button>
-      <button class="nav-item" data-page="settings">
-        <span class="nav-icon">⚙️</span> Préférences
-      </button>
-      <button class="nav-item admin-only" data-page="users" style="display:none;">
-        <span class="nav-icon">👤</span> Utilisateurs
-      </button>
-      <button class="nav-item admin-only" data-page="versions" style="display:none;">
-        <span class="nav-icon">🕒</span> Historique
-      </button>
-    </div>
-
+    <div class="nav-section-label">Paramètres</div>
+    <button class="nav-item" data-page="pagecontent">
+      <span class="nav-icon">✏️</span> Contenu des pages
+    </button>
+    <button class="nav-item" data-page="assopage">
+      <span class="nav-icon">🏠</span> Page d'accueil asso
+    </button>
+    <button class="nav-item" data-page="pages">
+      <span class="nav-icon">📄</span> Pages secondaires
+    </button>
+    <button class="nav-item" data-page="settings">
+      <span class="nav-icon">⚙️</span> Paramètres
+    </button>
+    <button class="nav-item admin-only" data-page="versions" style="display:none;">
+      <span class="nav-icon">🕒</span> Historique versions
+    </button>
+    <button class="nav-item admin-only" data-page="users" style="display:none;">
+      <span class="nav-icon">👤</span> Utilisateurs
+    </button>
   </aside>
 
   <!-- Main -->
@@ -1322,53 +1356,30 @@ tr:hover td { background: var(--blue-faint); }
     <div class="admin-page active" id="page-dashboard">
       <div class="page-hd">
         <div>
-          <h1>Bonjour 👋</h1>
-          <p id="dash-greeting">Voici un aperçu de ton site et des demandes reçues.</p>
+          <h1>Tableau de bord</h1>
+          <p id="dash-greeting">Bonjour — bienvenue dans l'interface d'administration.</p>
         </div>
-        <a href="index.html" target="_blank" class="btn btn-secondary">Voir le site →</a>
+        <a href="actualites.html" target="_blank" class="btn btn-secondary">Voir les actualités</a>
       </div>
 
-      <!-- À traiter -->
-      <div id="dash-attention" class="dash-attention calm">
-        <div class="dash-attention-icon">✓</div>
-        <div class="dash-attention-content">
-          <h2>Tout est à jour</h2>
-          <p>Aucune nouvelle demande en attente.</p>
-        </div>
-      </div>
-
-      <!-- Raccourcis -->
-      <div class="dash-section-title">Raccourcis</div>
-      <div class="dash-shortcuts" id="dash-shortcuts"></div>
-
-      <!-- Statistiques (rendues par admin-v2.js) -->
-      <div class="dash-section-title">Aperçu du site</div>
       <div class="stats-grid" id="dash-stats"></div>
 
-      <!-- Split : activité + listes existantes -->
-      <div class="dash-split" style="margin-top: 1.5rem;">
-        <div class="dash-card">
-          <div class="dash-card-head">
-            <h3>Activité récente</h3>
-            <button class="btn btn-sm btn-secondary" onclick="navigate('inbox')">Voir tout →</button>
-          </div>
-          <div class="dash-card-body" id="dash-activity">
-            <div class="empty-state"><strong>Pas d'activité récente</strong>Les nouveaux contenus apparaîtront ici.</div>
-          </div>
-        </div>
-
-        <div class="dash-card">
-          <div class="dash-card-head">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+        <div class="card">
+          <div class="card-header">
             <h3>Derniers articles</h3>
             <button class="btn btn-sm btn-secondary" data-page="articles" onclick="navigate('articles')">Gérer →</button>
           </div>
-          <div class="dash-card-body" id="dash-recent-articles"></div>
+          <div class="card-body" id="dash-recent-articles"></div>
         </div>
-      </div>
 
-      <div style="display:none;">
-        <!-- Compat: emplacement caché pour anciens hooks JS -->
-        <div id="dash-recent-admissions"></div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Demandes d'admission récentes</h3>
+            <button class="btn btn-sm btn-secondary" onclick="navigate('admissions')">Voir →</button>
+          </div>
+          <div class="card-body" id="dash-recent-admissions"></div>
+        </div>
       </div>
     </div>
 
@@ -1833,34 +1844,6 @@ tr:hover td { background: var(--blue-faint); }
       <div id="pages-list-wrap"></div>
     </div>
 
-    <!-- ── Images de fond ── -->
-    <div class="admin-page" id="page-section-bgs">      <div class="page-hd">
-        <div>
-          <h1>🖼️ Images de fond</h1>
-          <p>Choisis une image de fond pour chaque section des pages du site. Les images proviennent de ta médiathèque.</p>
-        </div>
-      </div>
-
-      <div class="sbg-toolbar">
-        <label for="sbg-page-select">Page à éditer :</label>
-        <select id="sbg-page-select"></select>
-        <a href="#" id="sbg-view-page" target="_blank" class="btn btn-secondary btn-sm" style="margin-left:auto;">Voir la page →</a>
-      </div>
-
-      <div id="sbg-sections-list"></div>
-    </div>
-
-    <!-- ── Couleurs du texte ── -->
-    <div class="admin-page" id="page-text-colors">
-      <div class="page-hd">
-        <div>
-          <h1>🎨 Couleurs du texte</h1>
-          <p>Modifie les couleurs des textes (titres, paragraphes, liens, accents) sur toutes les pages du site.</p>
-        </div>
-      </div>
-      <div id="tc-form-wrap"></div>
-    </div>
-
     <!-- ── Marque & identité ── -->
     <div class="admin-page" id="page-branding">
       <div class="page-hd">
@@ -1945,13 +1928,39 @@ tr:hover td { background: var(--blue-faint); }
       </div>
       <div class="f-group">
         <label>Contenu complet</label>
-        <div class="rte-toolbar">
-          <button type="button" class="rte-btn" onclick="rteCmd('bold')"><b>B</b></button>
-          <button type="button" class="rte-btn" onclick="rteCmd('italic')"><i>I</i></button>
-          <button type="button" class="rte-btn" onclick="rteInsert('&lt;blockquote&gt;', '&lt;/blockquote&gt;')">❝</button>
-          <button type="button" class="rte-btn" onclick="rteInsert('&lt;h2&gt;', '&lt;/h2&gt;')">H2</button>
-          <button type="button" class="rte-btn" onclick="rteInsert('&lt;p&gt;', '&lt;/p&gt;')">¶</button>
-          <button type="button" class="rte-btn" onclick="rteInsert('&lt;strong&gt;', '&lt;/strong&gt;')"><b>gras</b></button>
+        <div class="rte-toolbar" data-rte-target="a-content">
+          <select class="rte-font" data-rte-cmd="fontName" title="Choisir une police">
+            <option value="">Aa Police…</option>
+            <option value="Inter">Inter (par défaut)</option>
+            <option value="Playfair Display">Playfair Display (titres)</option>
+            <option value="Georgia">Georgia (serif classique)</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Arial">Arial (sans-serif)</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Trebuchet MS">Trebuchet MS</option>
+            <option value="Courier New">Courier New (monospace)</option>
+          </select>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn" onclick="rteCmd('bold')" title="Gras"><b>B</b></button>
+          <button type="button" class="rte-btn" onclick="rteCmd('italic')" title="Italique"><i>I</i></button>
+          <button type="button" class="rte-btn" onclick="rteCmd('underline')" title="Souligner"><u>U</u></button>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn" onclick="rteInsert('&lt;h2&gt;', '&lt;/h2&gt;')" title="Titre H2">H2</button>
+          <button type="button" class="rte-btn" onclick="rteInsert('&lt;blockquote&gt;', '&lt;/blockquote&gt;')" title="Citation">❝</button>
+          <span class="rte-sep"></span>
+          <div class="rte-colors" role="group" aria-label="Couleur du texte">
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#1a2530" style="background:#1a2530" title="Texte par défaut"></button>
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#256880" style="background:#256880" title="Bleu Foyer"></button>
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#d4880a" style="background:#d4880a" title="Orange SAJ"></button>
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#4a8a37" style="background:#4a8a37" title="Vert SAVS"></button>
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#7c4dab" style="background:#7c4dab" title="Violet EMP"></button>
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#d9924a" style="background:#d9924a" title="Doré accent"></button>
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#c94747" style="background:#c94747" title="Rouge"></button>
+            <label class="rte-color rte-color-pick" title="Couleur personnalisée">
+              <input type="color" data-rte-cmd="foreColor" value="#256880">
+            </label>
+          </div>
+          <button type="button" class="rte-btn" onclick="rteCmd('removeFormat')" title="Effacer la mise en forme" style="margin-left:auto;">✕ Style</button>
         </div>
         <div class="rte-area" id="a-content" contenteditable="true"></div>
       </div>
@@ -2103,23 +2112,47 @@ tr:hover td { background: var(--blue-faint); }
 
       <div class="f-group">
         <label>Contenu de la page</label>
-        <div class="rte-toolbar">
+        <div class="rte-toolbar" data-rte-target="pg-content">
+          <select class="rte-font" data-rte-cmd="fontName" title="Choisir une police">
+            <option value="">Aa Police…</option>
+            <option value="Inter">Inter (par défaut)</option>
+            <option value="Playfair Display">Playfair Display (titres)</option>
+            <option value="Georgia">Georgia (serif classique)</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Arial">Arial (sans-serif)</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Trebuchet MS">Trebuchet MS</option>
+            <option value="Courier New">Courier New (monospace)</option>
+          </select>
+          <span class="rte-sep"></span>
           <button type="button" class="rte-btn" data-pg-cmd="formatBlock" data-pg-arg="h2" title="Titre H2">H2</button>
           <button type="button" class="rte-btn" data-pg-cmd="formatBlock" data-pg-arg="h3" title="Titre H3">H3</button>
           <button type="button" class="rte-btn" data-pg-cmd="formatBlock" data-pg-arg="p" title="Paragraphe">¶</button>
-          <span style="border-left:1px solid #d8e2ea;height:18px;margin:0 .3rem;"></span>
+          <span class="rte-sep"></span>
           <button type="button" class="rte-btn" data-pg-cmd="bold" title="Gras"><b>B</b></button>
           <button type="button" class="rte-btn" data-pg-cmd="italic" title="Italique"><i>I</i></button>
           <button type="button" class="rte-btn" data-pg-cmd="underline" title="Souligner"><u>U</u></button>
-          <span style="border-left:1px solid #d8e2ea;height:18px;margin:0 .3rem;"></span>
+          <span class="rte-sep"></span>
           <button type="button" class="rte-btn" data-pg-cmd="insertUnorderedList" title="Liste à puces">• Liste</button>
           <button type="button" class="rte-btn" data-pg-cmd="insertOrderedList" title="Liste numérotée">1. Liste</button>
           <button type="button" class="rte-btn" data-pg-cmd="formatBlock" data-pg-arg="blockquote" title="Citation">❝</button>
-          <span style="border-left:1px solid #d8e2ea;height:18px;margin:0 .3rem;"></span>
+          <span class="rte-sep"></span>
           <button type="button" class="rte-btn" id="pg-link-btn" title="Lien">🔗 Lien</button>
           <button type="button" class="rte-btn" id="pg-img-btn" title="Insérer image">🖼 Image</button>
-          <button type="button" class="rte-btn" data-pg-cmd="removeFormat" title="Effacer la mise en forme">✕ Style</button>
-          <span style="margin-left:auto;font-size:.75rem;color:#7a8e9a;">Astuce : sélectionner du texte puis cliquer sur un bouton</span>
+          <span class="rte-sep"></span>
+          <div class="rte-colors" role="group" aria-label="Couleur du texte">
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#1a2530" style="background:#1a2530" title="Texte par défaut"></button>
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#256880" style="background:#256880" title="Bleu Foyer"></button>
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#d4880a" style="background:#d4880a" title="Orange SAJ"></button>
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#4a8a37" style="background:#4a8a37" title="Vert SAVS"></button>
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#7c4dab" style="background:#7c4dab" title="Violet EMP"></button>
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#d9924a" style="background:#d9924a" title="Doré accent"></button>
+            <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#c94747" style="background:#c94747" title="Rouge"></button>
+            <label class="rte-color rte-color-pick" title="Couleur personnalisée">
+              <input type="color" data-rte-cmd="foreColor" value="#256880">
+            </label>
+          </div>
+          <button type="button" class="rte-btn" data-pg-cmd="removeFormat" title="Effacer la mise en forme" style="margin-left:auto;">✕ Style</button>
         </div>
         <div class="rte-area" id="pg-content" contenteditable="true" style="min-height:300px;"></div>
       </div>
@@ -2475,9 +2508,6 @@ tr:hover td { background: var(--blue-faint); }
 <script src="js/db.js"></script>
 <script src="js/admin-services.js"></script>
 <script src="js/admin-v2.js" defer></script>
-<script src="js/admin-refresh.js" defer></script>
-<script src="js/section-bgs-admin.js" defer></script>
-<script src="js/text-colors-admin.js" defer></script>
 <script>
 'use strict';
 
@@ -2692,6 +2722,90 @@ function rteInsert(open, close) {
     document.execCommand('insertHTML', false, open.replace(/&lt;/g,'<').replace(/&gt;/g,'>') + sel_text + close.replace(/&lt;/g,'<').replace(/&gt;/g,'>'));
   }
 }
+
+/* ── RTE partagé : polices + couleurs (toolbar délégué) ──
+   Tous les contrôles avec [data-rte-cmd] dans une .rte-toolbar
+   ciblent l'éditeur indiqué par data-rte-target.
+   La sélection est sauvegardée avant chaque clic pour ne pas
+   être perdue quand un <select> ou un <input type=color> s'ouvre.
+   ──────────────────────────────────────────────────────── */
+(function () {
+  let savedRange = null;
+
+  function saveSelection() {
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    const node = sel.anchorNode;
+    if (!node) return;
+    const host = (node.nodeType === 1 ? node : node.parentElement);
+    const area = host && host.closest && host.closest('.rte-area');
+    if (area) savedRange = sel.getRangeAt(0).cloneRange();
+  }
+
+  function restoreSelection(editorId) {
+    const ed = document.getElementById(editorId);
+    if (!ed) return false;
+    ed.focus();
+    if (savedRange) {
+      try {
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+      } catch (_) { /* ignore */ }
+    }
+    return true;
+  }
+
+  function apply(toolbar, cmd, value) {
+    if (!toolbar) return;
+    const target = toolbar.dataset.rteTarget;
+    if (!target) return;
+    if (!restoreSelection(target)) return;
+    try { document.execCommand('styleWithCSS', false, true); } catch (_) {}
+    document.execCommand(cmd, false, value || null);
+  }
+
+  // Mémoriser la sélection à chaque changement
+  document.addEventListener('selectionchange', saveSelection);
+
+  // Capter le mousedown sur la toolbar AVANT que le focus parte
+  document.addEventListener('mousedown', (e) => {
+    if (!e.target.closest || !e.target.closest('.rte-toolbar')) return;
+    saveSelection();
+    // Empêcher les boutons de voler le focus à l'éditeur
+    const btn = e.target.closest('.rte-btn, .rte-color');
+    if (btn && btn.tagName === 'BUTTON') e.preventDefault();
+  });
+
+  // Clic sur une pastille de couleur (bouton avec data-rte-cmd + data-rte-arg)
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest && e.target.closest('button[data-rte-cmd]');
+    if (!btn) return;
+    const toolbar = btn.closest('.rte-toolbar');
+    if (!toolbar) return;
+    e.preventDefault();
+    apply(toolbar, btn.dataset.rteCmd, btn.dataset.rteArg);
+  });
+
+  // Sélecteur de police (<select data-rte-cmd="fontName">)
+  document.addEventListener('change', (e) => {
+    const sel = e.target;
+    if (!sel.matches || !sel.matches('select[data-rte-cmd]')) return;
+    const toolbar = sel.closest('.rte-toolbar');
+    if (!toolbar || !sel.value) return;
+    apply(toolbar, sel.dataset.rteCmd, sel.value);
+    sel.selectedIndex = 0; // revenir sur le placeholder "Police…"
+  });
+
+  // Couleur personnalisée (<input type="color" data-rte-cmd="foreColor">)
+  document.addEventListener('input', (e) => {
+    const inp = e.target;
+    if (!inp.matches || !inp.matches('input[type="color"][data-rte-cmd]')) return;
+    const toolbar = inp.closest('.rte-toolbar');
+    if (!toolbar) return;
+    apply(toolbar, inp.dataset.rteCmd, inp.value);
+  });
+})();
 
 function previewImg(url) {
   const img = document.getElementById('a-img-preview');
