@@ -33,14 +33,13 @@ const FoyerDB = (() => {
     branding:     '3r-branding',     // logo, couleurs, polices, favicon
     versions:     '3r-versions',     // historique des versions (snapshots)
     customPages:  '3r-custom-pages', // pages secondaires éditables (WYSIWYG)
-    sectionStyles:'3r-section-styles', // couleurs de fond personnalisées par section
     schemaVersion:'3r-schema-version',
     users:        '3r-users'
   };
 
   const MAX_VERSIONS_PER_KEY = 10; // nombre max de versions conservées par clé
 
-  const SCHEMA_VERSION = 5;
+  const SCHEMA_VERSION = 4;
   const MAX_FILE_BYTES = 2 * 1024 * 1024; // 2 Mo / fichier
 
   /* ── Données par défaut ─────────────────────────────── */
@@ -595,24 +594,6 @@ const FoyerDB = (() => {
       if (settingsChanged) persist(KEYS.settings, settings);
     }
 
-    /* v4 → v5 : ré-injecte la page gouvernance (avec les 5 cartes responsables)
-       si elle a été supprimée ou si elle utilise encore l'ancien contenu sans cartes. */
-    if (cur < 5) {
-      const pages = load(KEYS.customPages) || [];
-      const idx = pages.findIndex(p => p.slug === 'gouvernance');
-      const defaultGouv = DEFAULT_CUSTOM_PAGES.find(p => p.slug === 'gouvernance');
-      if (defaultGouv) {
-        if (idx === -1) {
-          pages.push(JSON.parse(JSON.stringify(defaultGouv)));
-        } else if (!pages[idx].content || !pages[idx].content.includes('team-grid')) {
-          // Mise à jour : ancien contenu sans cartes → on remplace
-          pages[idx].content = defaultGouv.content;
-          pages[idx].updatedAt = new Date().toISOString();
-        }
-        persist(KEYS.customPages, pages);
-      }
-    }
-
     localStorage.setItem(KEYS.schemaVersion, String(SCHEMA_VERSION));
   }
 
@@ -635,37 +616,6 @@ const FoyerDB = (() => {
     init(KEYS.media,        DEFAULTS.media);
     init(KEYS.users,        DEFAULTS.users);
     init(KEYS.customPages,  DEFAULT_CUSTOM_PAGES);
-    init(KEYS.sectionStyles, {});
-  }
-
-  /* ── Couleurs / images de section personnalisées ──── */
-  function getSectionStyles() {
-    return load(KEYS.sectionStyles) || {};
-  }
-  function setSectionStyle(page, sectionId, styleObj) {
-    // styleObj : { backgroundColor?, backgroundImage?, overlay? }
-    // Pour compatibilité ascendante : si une string est passée, c'est une couleur
-    if (typeof styleObj === 'string') styleObj = { backgroundColor: styleObj };
-    const all = getSectionStyles();
-    const key = page + ':' + sectionId;
-    const cur = all[key] || {};
-    const next = { ...cur, ...(styleObj || {}) };
-    // Nettoyage : si toutes les valeurs sont vides, on supprime l'entrée
-    Object.keys(next).forEach(k => { if (!next[k]) delete next[k]; });
-    if (Object.keys(next).length === 0) {
-      delete all[key];
-    } else {
-      all[key] = next;
-    }
-    return persist(KEYS.sectionStyles, all);
-  }
-  function clearSectionStyle(page, sectionId) {
-    const all = getSectionStyles();
-    delete all[page + ':' + sectionId];
-    return persist(KEYS.sectionStyles, all);
-  }
-  function clearAllSectionStyles() {
-    return persist(KEYS.sectionStyles, {});
   }
 
   /* ── Filtre commun par service + published + publishAt ── */
@@ -880,46 +830,7 @@ const FoyerDB = (() => {
       eyebrow: "À propos de l'association",
       breadcrumb: 'Gouvernance',
       published: true,
-      content: `<h2>Direction générale</h2><p>L'association LEILA est dirigée par <strong>Arnaud BRASSET</strong>, directeur général. La présidence du conseil d'administration est assurée par <strong>Schéhérazad DJENANE</strong>.</p>
-
-<h2>Les responsables de service</h2>
-<p>Chaque établissement et service de l'association est piloté par un responsable dédié. Ensemble, ils forment l'équipe de direction qui met en œuvre les orientations définies par le conseil d'administration.</p>
-
-<div class="team-grid" style="margin: 2rem 0;">
-  <article class="team-card">
-    <div class="team-avatar"><img src="https://placehold.co/120x120/256880/ffffff?text=DG" alt="Photo du directeur général"></div>
-    <span class="team-count">Direction</span>
-    <div class="team-role">Directeur général</div>
-    <p>Arnaud BRASSET — Pilotage stratégique de l'association et coordination des 4 établissements.</p>
-  </article>
-  <article class="team-card">
-    <div class="team-avatar"><img src="https://placehold.co/120x120/256880/ffffff?text=Foyer" alt="Photo du chef de service du Foyer"></div>
-    <span class="team-count">Foyer</span>
-    <div class="team-role">Chef de service Foyer</div>
-    <p>Responsable du Foyer Les Trois Rivières — hébergement et accompagnement de 45 adultes en situation de handicap.</p>
-  </article>
-  <article class="team-card">
-    <div class="team-avatar"><img src="https://placehold.co/120x120/d18a4a/ffffff?text=SAJ" alt="Photo du chef de service du SAJ"></div>
-    <span class="team-count">SAJ</span>
-    <div class="team-role">Chef de service SAJ</div>
-    <p>Responsable du SAJ Les Trois Rivières — accueil de jour pour 15 adultes en situation de handicap psychique.</p>
-  </article>
-  <article class="team-card">
-    <div class="team-avatar"><img src="https://placehold.co/120x120/5a8c6e/ffffff?text=SAVS" alt="Photo du chef de service du SAVS"></div>
-    <span class="team-count">SAVS</span>
-    <div class="team-role">Chef de service SAVS</div>
-    <p>Responsable du SAVS Les Trois Rivières — accompagnement à la vie sociale de 42 personnes à domicile.</p>
-  </article>
-  <article class="team-card">
-    <div class="team-avatar"><img src="https://placehold.co/120x120/8b5e9c/ffffff?text=EMP" alt="Photo du directeur pédagogique de l'EMP"></div>
-    <span class="team-count">EMP</span>
-    <div class="team-role">Directeur pédagogique EMP</div>
-    <p>Responsable de l'EMP Henri Wallon — externat médico-pédagogique pour enfants en situation de handicap.</p>
-  </article>
-</div>
-
-<h2>Conseil d'administration</h2>
-<p>Le conseil d'administration se réunit régulièrement pour définir les orientations stratégiques de l'association, valider les budgets et accompagner les évolutions des services.</p>`,
+      content: `<h2>Direction</h2><p>L'association LEILA est dirigée par <strong>Arnaud BRASSET</strong>, directeur général.</p><h2>Conseil d'administration</h2><p>Présidente : <strong>Schéhérazad DJENANE</strong></p><p>Le conseil d'administration se réunit régulièrement pour définir les orientations stratégiques de l'association.</p>`,
       updatedAt: new Date().toISOString()
     },
     {
@@ -1064,7 +975,6 @@ const FoyerDB = (() => {
     getAssociation, saveAssociation,
     getBranding, saveBranding, resetBranding,
     getCustomPages, getCustomPage, saveCustomPage, deleteCustomPage,
-    getSectionStyles, setSectionStyle, clearSectionStyle, clearAllSectionStyles,
     getVersions, getAllVersions, restoreVersion, clearVersions,
     getUsers, getUserByUsername, saveUser, deleteUser,
 
