@@ -19,6 +19,22 @@
     if (el) el.textContent = val;
   }
 
+  // Pour les champs au contenu riche (HTML autorisé depuis l'admin)
+  // Convertit aussi le texte brut existant (\n\n → paragraphes).
+  function setHtml(sel, val) {
+    if (val == null) return;
+    const el = document.querySelector(sel);
+    if (!el) return;
+    let html = String(val);
+    if (html && !/<[a-z][^>]*>/i.test(html)) {
+      const parts = html.split(/\n\s*\n/).filter(p => p.length);
+      html = parts.length > 1
+        ? parts.map(p => '<p>' + p.replace(/\n/g, '<br>') + '</p>').join('')
+        : html.replace(/\n/g, '<br>');
+    }
+    el.innerHTML = html;
+  }
+
   function setAttr(sel, attr, val) {
     if (val == null) return;
     const el = document.querySelector(sel);
@@ -36,7 +52,7 @@
     if (h1 && (pc.heroTitle || pc.heroAccent || pc.heroSuffix)) {
       h1.innerHTML = `${escapeHtml(pc.heroTitle || 'Association')} <span class="accent">${escapeHtml(pc.heroAccent || 'LEILA')}</span>${escapeHtml(pc.heroSuffix || '')}`;
     }
-    setText('.hero-asso .hero-lead', pc.heroLead);
+    setHtml('.hero-asso .hero-lead', pc.heroLead);
 
     // Boutons hero
     const heroBtns = document.querySelectorAll('.hero-asso .hero-actions a');
@@ -60,12 +76,12 @@
     // Section présentation asso
     setText('[aria-labelledby="asso-title"] .eyebrow', pc.assoEyebrow);
     setText('#asso-title', pc.assoTitle);
-    setText('[aria-labelledby="asso-title"] .lead', pc.assoLead);
+    setHtml('[aria-labelledby="asso-title"] .lead', pc.assoLead);
 
     // Section services intro
     setText('[aria-labelledby="services-title"] .eyebrow', pc.servicesEyebrow);
     setText('#services-title', pc.servicesTitle);
-    setText('[aria-labelledby="services-title"] .lead', pc.servicesLead);
+    setHtml('[aria-labelledby="services-title"] .lead', pc.servicesLead);
 
     // Section valeurs
     setText('[aria-labelledby="valeurs-title"] .eyebrow', pc.valeursEyebrow);
@@ -80,7 +96,7 @@
         const tx = card.querySelector('p');
         if (ic && v.icon)  ic.textContent  = v.icon;
         if (tt && v.title) tt.textContent  = v.title;
-        if (tx && v.text)  tx.textContent  = v.text;
+        if (tx && v.text)  tx.innerHTML    = v.text;
       });
     }
 
@@ -91,7 +107,7 @@
       const p = ctaSection.querySelector('p');
       const btns = ctaSection.querySelectorAll('a.btn');
       if (t && pc.ctaTitle) t.textContent = pc.ctaTitle;
-      if (p && pc.ctaLead)  p.textContent = pc.ctaLead;
+      if (p && pc.ctaLead)  p.innerHTML   = pc.ctaLead;
       if (btns[0] && pc.ctaBtn1Label) btns[0].textContent = pc.ctaBtn1Label;
       if (btns[0] && pc.ctaBtn1Href)  btns[0].setAttribute('href', pc.ctaBtn1Href);
       if (btns[1] && pc.ctaBtn2Label) btns[1].textContent = pc.ctaBtn2Label;

@@ -430,12 +430,25 @@
     const s  = FoyerDB.getSettings(SVC);
     if (!s) return;
     const pc = s.pageContent || {};
-    const set = (sel, val) => { if (!val) return; const el = document.querySelector(sel); if (el) el.textContent = val; };
+    const set     = (sel, val) => { if (!val) return; const el = document.querySelector(sel); if (el) el.textContent = val; };
+    const setHtml = (sel, val) => {
+      if (!val) return;
+      const el = document.querySelector(sel);
+      if (!el) return;
+      let h = String(val);
+      if (!/<[a-z][^>]*>/i.test(h)) {
+        const parts = h.split(/\n\s*\n/).filter(p => p.length);
+        h = parts.length > 1
+          ? parts.map(p => '<p>' + p.replace(/\n/g, '<br>') + '</p>').join('')
+          : h.replace(/\n/g, '<br>');
+      }
+      el.innerHTML = h;
+    };
     set('.hero-tag',           pc.heroTag);
     set('.hero h1',            pc.heroTitle);
-    set('.hero-lead',          pc.heroLead);
+    setHtml('.hero-lead',          pc.heroLead);
     set('#presentation h2',    pc.missionTitle);
-    set('#presentation .lead', pc.missionLead);
+    setHtml('#presentation .lead', pc.missionLead);
     if (s.heroStats && s.heroStats.length) {
       document.querySelectorAll('.hero-stats > div').forEach((div, i) => {
         const stat = s.heroStats[i];
@@ -463,7 +476,5 @@
   window.addEventListener('focus', renderAll);
 })();
 </script>
-  <script src="js/text-colors-runtime.js"></script>
-  <script src="js/section-bgs-runtime.js"></script>
 </body>
 </html>

@@ -1082,6 +1082,28 @@ tr:hover td { background: var(--blue-faint); }
 }
 .rte-area:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,104,128,.1); }
 
+/* ── Variante compacte (champs intégrés dans un formulaire) ── */
+.rte-toolbar-compact {
+  padding: 0.35rem 0.5rem;
+  gap: 0.2rem;
+  border-radius: 7px 7px 0 0;
+}
+.rte-toolbar-compact .rte-btn { padding: 0.22rem 0.45rem; font-size: 0.78rem; }
+.rte-toolbar-compact .rte-font { font-size: 0.78rem; padding: 0.22rem 0.4rem; max-width: 150px; }
+.rte-toolbar-compact .rte-color { width: 18px; height: 18px; }
+.rte-area-compact {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  padding: 0.65rem 0.75rem;
+}
+.rte-area-compact:empty::before {
+  content: attr(data-placeholder);
+  color: #aab5be;
+  pointer-events: none;
+  font-style: italic;
+}
+.rte-area-compact br + br { display: none; } /* évite les double-sauts en édition */
+
 /* Dashboard activity feed */
 .activity-feed { display: flex; flex-direction: column; gap: 0; }
 .activity-item {
@@ -2729,6 +2751,69 @@ function rteInsert(open, close) {
    La sélection est sauvegardée avant chaque clic pour ne pas
    être perdue quand un <select> ou un <input type=color> s'ouvre.
    ──────────────────────────────────────────────────────── */
+
+/* Helper réutilisable : génère toolbar + zone éditable
+   Usage dans un template literal : ${rteFieldHTML('mon-id', valeur, {placeholder:'…', minHeight:120})}
+*/
+function rteFieldHTML(id, value, opts) {
+  opts = opts || {};
+  const placeholder = (opts.placeholder || '').toString().replace(/"/g, '&quot;').replace(/&/g, '&amp;');
+  const minH = opts.minHeight || 130;
+  const compact = opts.compact !== false;
+  // Migration : si la valeur est du texte brut (pas de balise HTML),
+  // on convertit les \n\n en paragraphes et \n en <br>.
+  let html = value || '';
+  if (html && !/<[a-z][^>]*>/i.test(html)) {
+    const parts = String(html).split(/\n\s*\n/).filter(p => p.length);
+    if (parts.length > 1) {
+      html = parts.map(p => '<p>' + p.replace(/\n/g, '<br>') + '</p>').join('');
+    } else {
+      html = String(html).replace(/\n/g, '<br>');
+    }
+  }
+  return `
+    <div class="rte-toolbar ${compact ? 'rte-toolbar-compact' : ''}" data-rte-target="${id}">
+      <select class="rte-font" data-rte-cmd="fontName" title="Choisir une police">
+        <option value="">Aa Police…</option>
+        <option value="Inter">Inter (par défaut)</option>
+        <option value="Playfair Display">Playfair Display</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Arial">Arial</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Trebuchet MS">Trebuchet MS</option>
+        <option value="Courier New">Courier New</option>
+      </select>
+      <span class="rte-sep"></span>
+      <button type="button" class="rte-btn" data-rte-cmd="bold" title="Gras"><b>B</b></button>
+      <button type="button" class="rte-btn" data-rte-cmd="italic" title="Italique"><i>I</i></button>
+      <button type="button" class="rte-btn" data-rte-cmd="underline" title="Souligner"><u>U</u></button>
+      <span class="rte-sep"></span>
+      <div class="rte-colors" role="group" aria-label="Couleur du texte">
+        <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#1a2530" style="background:#1a2530" title="Texte par défaut"></button>
+        <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#256880" style="background:#256880" title="Bleu Foyer"></button>
+        <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#d4880a" style="background:#d4880a" title="Orange SAJ"></button>
+        <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#4a8a37" style="background:#4a8a37" title="Vert SAVS"></button>
+        <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#7c4dab" style="background:#7c4dab" title="Violet EMP"></button>
+        <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#d9924a" style="background:#d9924a" title="Doré accent"></button>
+        <button type="button" class="rte-color" data-rte-cmd="foreColor" data-rte-arg="#c94747" style="background:#c94747" title="Rouge"></button>
+        <label class="rte-color rte-color-pick" title="Couleur personnalisée">
+          <input type="color" data-rte-cmd="foreColor" value="#256880">
+        </label>
+      </div>
+      <button type="button" class="rte-btn" data-rte-cmd="removeFormat" title="Effacer la mise en forme" style="margin-left:auto;">✕ Style</button>
+    </div>
+    <div class="rte-area rte-area-compact" id="${id}" contenteditable="true" data-placeholder="${placeholder}" style="min-height:${minH}px;">${html}</div>
+  `;
+}
+
+/* Lit la valeur d'un champ : .innerHTML si contenteditable, .value sinon */
+function rteValue(idOrEl) {
+  const el = (typeof idOrEl === 'string') ? document.getElementById(idOrEl) : idOrEl;
+  if (!el) return '';
+  return (el.isContentEditable ? el.innerHTML : el.value || '').trim();
+}
+
 (function () {
   let savedRange = null;
 
@@ -4999,7 +5084,7 @@ function renderPageContent() {
             </div>
             <div class="f-group" style="margin-bottom:0;">
               <label>Texte d'introduction <span class="pc-helper">(2 à 3 phrases, présentation du service)</span></label>
-              <textarea id="pc-heroLead" rows="5" placeholder="${escapeHtml(defPc.heroLead || '')}">${v('heroLead')}</textarea>
+              ${rteFieldHTML('pc-heroLead', v('heroLead'), { placeholder: defPc.heroLead || '', minHeight: 110 })}
             </div>
           </div>
         </div>
@@ -5034,7 +5119,7 @@ function renderPageContent() {
             </div>
             <div class="f-group" style="margin-bottom:0;">
               <label>Texte de présentation <span class="pc-helper">(décrivez la mission en 4-6 lignes)</span></label>
-              <textarea id="pc-missionLead" rows="7" placeholder="${escapeHtml(defPc.missionLead || '')}">${v('missionLead')}</textarea>
+              ${rteFieldHTML('pc-missionLead', v('missionLead'), { placeholder: defPc.missionLead || '', minHeight: 150 })}
             </div>
           </div>
         </div>
@@ -5112,7 +5197,7 @@ function renderPageContent() {
         <div class="pc-preview-hero">
           <div class="ph-tag" id="pv-tag">${escapeHtml(pc.heroTag || defPc.heroTag || 'Bandeau accroche')}</div>
           <div class="ph-title" id="pv-title">${escapeHtml(pc.heroTitle || defPc.heroTitle || 'Titre principal')}</div>
-          <div class="ph-lead" id="pv-lead">${escapeHtml(pc.heroLead || defPc.heroLead || 'Texte d\'introduction…')}</div>
+          <div class="ph-lead" id="pv-lead">${pc.heroLead || escapeHtml(defPc.heroLead || 'Texte d\'introduction…')}</div>
           <div class="ph-stats">
             ${[0,1,2,3].map(i => `
               <div class="ph-stat">
@@ -5125,7 +5210,7 @@ function renderPageContent() {
         <div class="pc-preview-block">
           <h4>📋 Notre mission</h4>
           <div class="pb-title" id="pv-missionTitle">${escapeHtml(pc.missionTitle || defPc.missionTitle || '—')}</div>
-          <div class="pb-text" id="pv-missionLead">${escapeHtml(pc.missionLead || defPc.missionLead || '—')}</div>
+          <div class="pb-text" id="pv-missionLead">${pc.missionLead || escapeHtml(defPc.missionLead || '—')}</div>
         </div>
 
         <div class="pc-preview-block">
@@ -5157,8 +5242,10 @@ function renderPageContent() {
     const pv  = document.getElementById(previewId);
     if (!inp || !pv) return;
     inp.addEventListener('input', () => {
-      const val = inp.value.trim();
+      const raw = inp.isContentEditable ? inp.innerHTML : inp.value;
+      const val = (raw || '').trim();
       if (transform) pv.innerHTML = transform(val);
+      else if (inp.isContentEditable) pv.innerHTML = val || '—';
       else pv.textContent = val || '—';
     });
   };
@@ -5431,9 +5518,9 @@ function renderPageContent() {
     settings.pageContent = Object.assign({}, settings.pageContent || {}, {
       heroTag:      document.getElementById('pc-heroTag').value.trim(),
       heroTitle:    document.getElementById('pc-heroTitle').value.trim(),
-      heroLead:     document.getElementById('pc-heroLead').value.trim(),
+      heroLead:     rteValue('pc-heroLead'),
       missionTitle: document.getElementById('pc-missionTitle').value.trim(),
-      missionLead:  document.getElementById('pc-missionLead').value.trim()
+      missionLead:  rteValue('pc-missionLead')
     });
 
     settings.heroStats = [0,1,2,3].map(i => ({
@@ -5523,7 +5610,7 @@ function renderAssoPage() {
         </div>
         <div class="f-group">
           <label>Texte d'introduction</label>
-          <textarea id="ap-heroLead" rows="5" style="width:100%;resize:vertical;">${v('heroLead')}</textarea>
+          ${rteFieldHTML('ap-heroLead', v('heroLead'), { placeholder: 'Présentation courte affichée dans le hero…', minHeight: 110 })}
         </div>
         <div class="f-row">
           <div class="f-group">
@@ -5581,7 +5668,7 @@ function renderAssoPage() {
         </div>
         <div class="f-group" style="margin-bottom:0;">
           <label>Texte de présentation</label>
-          <textarea id="ap-assoLead" rows="5" style="width:100%;resize:vertical;">${v('assoLead')}</textarea>
+          ${rteFieldHTML('ap-assoLead', v('assoLead'), { placeholder: 'Décrivez l\'association en 3-5 lignes…', minHeight: 110 })}
         </div>
       </div>
     </div>
@@ -5601,7 +5688,7 @@ function renderAssoPage() {
         </div>
         <div class="f-group" style="margin-bottom:0;">
           <label>Texte d'introduction</label>
-          <textarea id="ap-servicesLead" rows="3" style="width:100%;resize:vertical;">${v('servicesLead')}</textarea>
+          ${rteFieldHTML('ap-servicesLead', v('servicesLead'), { placeholder: '1-2 phrases d\'intro…', minHeight: 90 })}
         </div>
       </div>
     </div>
@@ -5635,7 +5722,7 @@ function renderAssoPage() {
               </div>
               <div class="f-group" style="margin:.6rem 0 0;">
                 <label style="font-size:.77rem;">Description</label>
-                <textarea id="ap-val${i}Text" rows="3" style="width:100%;resize:vertical;font-size:.85rem;">${escapeHtml(valeurs[i].text || '')}</textarea>
+                ${rteFieldHTML('ap-val'+i+'Text', valeurs[i].text || '', { placeholder: 'Décrivez la valeur…', minHeight: 80 })}
               </div>
             </div>`).join('')}
         </div>
@@ -5653,7 +5740,7 @@ function renderAssoPage() {
         </div>
         <div class="f-group">
           <label>Texte</label>
-          <textarea id="ap-ctaLead" rows="3" style="width:100%;resize:vertical;">${v('ctaLead')}</textarea>
+          ${rteFieldHTML('ap-ctaLead', v('ctaLead'), { placeholder: 'Phrase d\'incitation à l\'action…', minHeight: 90 })}
         </div>
         <div class="f-row">
           <div class="f-group">
@@ -5694,7 +5781,11 @@ function renderAssoPage() {
 
   document.getElementById('assopage-form').addEventListener('submit', e => {
     e.preventDefault();
-    const get = id => (document.getElementById(id)?.value || '').trim();
+    const get = id => {
+      const el = document.getElementById(id);
+      if (!el) return '';
+      return (el.isContentEditable ? el.innerHTML : el.value || '').trim();
+    };
     const a = FoyerDB.getAssociation();
 
     // Stats
