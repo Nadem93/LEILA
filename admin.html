@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ── Reset & tokens ───────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1136,6 +1137,7 @@ tr:hover td { background: var(--blue-faint); }
 }
 </style>
 <link rel="stylesheet" href="css/admin-v2.css">
+<link rel="stylesheet" href="css/admin-refresh.css">
 </head>
 <body>
 
@@ -1179,6 +1181,13 @@ tr:hover td { background: var(--blue-faint); }
       Association LEILA
       <span class="header-badge">Admin</span>
     </div>
+
+    <div class="refresh-search">
+      <input type="text" id="refresh-search-input" placeholder="Rechercher une section (article, agenda, photos…)" autocomplete="off">
+      <kbd>⌘K</kbd>
+      <div class="refresh-search-results" id="refresh-search-results"></div>
+    </div>
+
     <div class="header-right">
       <div class="service-selector" role="tablist" aria-label="Service à administrer">
         <button class="service-pill" data-svc="all" type="button" title="Tous services">
@@ -1215,77 +1224,89 @@ tr:hover td { background: var(--blue-faint); }
 
   <!-- Sidebar -->
   <aside class="admin-sidebar">
-    <div class="nav-section-label">Navigation</div>
-    <button class="nav-item active" data-page="dashboard">
-      <span class="nav-icon">📊</span> Tableau de bord
-    </button>
 
-    <div class="nav-section-label">Contenu</div>
-    <button class="nav-item" data-page="articles">
-      <span class="nav-icon">📰</span> Actualités
-    </button>
-    <button class="nav-item" data-page="testimonials">
-      <span class="nav-icon">💬</span> Témoignages
-    </button>
+    <div class="nav-pinned">
+      <button class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">🏠</span> Accueil
+      </button>
+    </div>
 
-    <button class="nav-item" data-page="documents">
-      <span class="nav-icon">📁</span> Documents
-    </button>
-    <button class="nav-item" data-page="photos">
-      <span class="nav-icon">🖼️</span> Galerie photos
-    </button>
-    <button class="nav-item" data-page="media">
-      <span class="nav-icon">🎞️</span> Médiathèque
-    </button>
-    <button class="nav-item" data-page="events">
-      <span class="nav-icon">📅</span> Agenda
-    </button>
-    <button class="nav-item" data-page="team">
-      <span class="nav-icon">👥</span> Équipe
-    </button>
-    <button class="nav-item" data-page="partners">
-      <span class="nav-icon">🏢</span> Partenaires
-    </button>
-    <button class="nav-item" data-page="contact">
-      <span class="nav-icon">📞</span> Contact &amp; FAQ
-    </button>
+    <div class="nav-group">
+      <div class="nav-group-title">Publier</div>
+      <button class="nav-item" data-page="articles">
+        <span class="nav-icon">📰</span> Actualités
+      </button>
+      <button class="nav-item" data-page="events">
+        <span class="nav-icon">📅</span> Agenda
+      </button>
+      <button class="nav-item" data-page="photos">
+        <span class="nav-icon">🖼️</span> Photos
+      </button>
+      <button class="nav-item" data-page="media">
+        <span class="nav-icon">🎞️</span> Vidéos
+      </button>
+      <button class="nav-item" data-page="testimonials">
+        <span class="nav-icon">💬</span> Témoignages
+      </button>
+      <button class="nav-item" data-page="documents">
+        <span class="nav-icon">📁</span> Documents
+      </button>
+    </div>
 
-    <div class="nav-section-label">Demandes</div>
-    <button class="nav-item" data-page="inbox">
-      <span class="nav-icon">📨</span> Boîte de réception
-      <span class="nav-badge nav-badge-alert" id="inbox-badge" style="display:none;">0</span>
-    </button>
-    <button class="nav-item" data-page="admissions">
-      <span class="nav-icon">📋</span> Admissions
-      <span class="nav-badge" id="admissions-badge">0</span>
-    </button>
-    <button class="nav-item" data-page="applications">
-      <span class="nav-icon">🎓</span> Candidatures stage
-      <span class="nav-badge" id="applications-badge">0</span>
-    </button>
+    <div class="nav-group">
+      <div class="nav-group-title">Demandes</div>
+      <button class="nav-item" data-page="inbox">
+        <span class="nav-icon">📨</span> Boîte de réception
+        <span class="nav-badge nav-badge-alert" id="inbox-badge" style="display:none;">0</span>
+      </button>
+      <button class="nav-item" data-page="admissions">
+        <span class="nav-icon">📋</span> Admissions
+        <span class="nav-badge" id="admissions-badge">0</span>
+      </button>
+      <button class="nav-item" data-page="applications">
+        <span class="nav-icon">🎓</span> Candidatures stage
+        <span class="nav-badge" id="applications-badge">0</span>
+      </button>
+    </div>
 
-    <div class="nav-section-label">Paramètres</div>
-    <button class="nav-item" data-page="pagecontent">
-      <span class="nav-icon">✏️</span> Contenu des pages
-    </button>
-    <button class="nav-item" data-page="assopage">
-      <span class="nav-icon">🏠</span> Page d'accueil asso
-    </button>
-    <button class="nav-item" data-page="pages">
-      <span class="nav-icon">📄</span> Pages secondaires
-    </button>
-    <button class="nav-item" data-page="branding">
-      <span class="nav-icon">🎨</span> Marque & identité
-    </button>
-    <button class="nav-item" data-page="settings">
-      <span class="nav-icon">⚙️</span> Paramètres
-    </button>
-    <button class="nav-item admin-only" data-page="versions" style="display:none;">
-      <span class="nav-icon">🕒</span> Historique versions
-    </button>
-    <button class="nav-item admin-only" data-page="users" style="display:none;">
-      <span class="nav-icon">👤</span> Utilisateurs
-    </button>
+    <div class="nav-group">
+      <div class="nav-group-title">Le site</div>
+      <button class="nav-item" data-page="pagecontent">
+        <span class="nav-icon">✏️</span> Textes des pages
+      </button>
+      <button class="nav-item" data-page="assopage">
+        <span class="nav-icon">🏠</span> Page d'accueil asso
+      </button>
+      <button class="nav-item" data-page="pages">
+        <span class="nav-icon">📄</span> Pages personnalisées
+      </button>
+      <button class="nav-item" data-page="team">
+        <span class="nav-icon">👥</span> Équipe
+      </button>
+      <button class="nav-item" data-page="partners">
+        <span class="nav-icon">🤝</span> Partenaires
+      </button>
+      <button class="nav-item" data-page="contact">
+        <span class="nav-icon">📞</span> Contact &amp; FAQ
+      </button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Réglages</div>
+      <button class="nav-item" data-page="branding">
+        <span class="nav-icon">🎨</span> Apparence du site
+      </button>
+      <button class="nav-item" data-page="settings">
+        <span class="nav-icon">⚙️</span> Préférences
+      </button>
+      <button class="nav-item admin-only" data-page="users" style="display:none;">
+        <span class="nav-icon">👤</span> Utilisateurs
+      </button>
+      <button class="nav-item admin-only" data-page="versions" style="display:none;">
+        <span class="nav-icon">🕒</span> Historique
+      </button>
+    </div>
+
   </aside>
 
   <!-- Main -->
@@ -1295,30 +1316,53 @@ tr:hover td { background: var(--blue-faint); }
     <div class="admin-page active" id="page-dashboard">
       <div class="page-hd">
         <div>
-          <h1>Tableau de bord</h1>
-          <p id="dash-greeting">Bonjour — bienvenue dans l'interface d'administration.</p>
+          <h1>Bonjour 👋</h1>
+          <p id="dash-greeting">Voici un aperçu de ton site et des demandes reçues.</p>
         </div>
-        <a href="actualites.html" target="_blank" class="btn btn-secondary">Voir les actualités</a>
+        <a href="index.html" target="_blank" class="btn btn-secondary">Voir le site →</a>
       </div>
 
+      <!-- À traiter -->
+      <div id="dash-attention" class="dash-attention calm">
+        <div class="dash-attention-icon">✓</div>
+        <div class="dash-attention-content">
+          <h2>Tout est à jour</h2>
+          <p>Aucune nouvelle demande en attente.</p>
+        </div>
+      </div>
+
+      <!-- Raccourcis -->
+      <div class="dash-section-title">Raccourcis</div>
+      <div class="dash-shortcuts" id="dash-shortcuts"></div>
+
+      <!-- Statistiques (rendues par admin-v2.js) -->
+      <div class="dash-section-title">Aperçu du site</div>
       <div class="stats-grid" id="dash-stats"></div>
 
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
-        <div class="card">
-          <div class="card-header">
+      <!-- Split : activité + listes existantes -->
+      <div class="dash-split" style="margin-top: 1.5rem;">
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h3>Activité récente</h3>
+            <button class="btn btn-sm btn-secondary" onclick="navigate('inbox')">Voir tout →</button>
+          </div>
+          <div class="dash-card-body" id="dash-activity">
+            <div class="empty-state"><strong>Pas d'activité récente</strong>Les nouveaux contenus apparaîtront ici.</div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-head">
             <h3>Derniers articles</h3>
             <button class="btn btn-sm btn-secondary" data-page="articles" onclick="navigate('articles')">Gérer →</button>
           </div>
-          <div class="card-body" id="dash-recent-articles"></div>
+          <div class="dash-card-body" id="dash-recent-articles"></div>
         </div>
+      </div>
 
-        <div class="card">
-          <div class="card-header">
-            <h3>Demandes d'admission récentes</h3>
-            <button class="btn btn-sm btn-secondary" onclick="navigate('admissions')">Voir →</button>
-          </div>
-          <div class="card-body" id="dash-recent-admissions"></div>
-        </div>
+      <div style="display:none;">
+        <!-- Compat: emplacement caché pour anciens hooks JS -->
+        <div id="dash-recent-admissions"></div>
       </div>
     </div>
 
@@ -2397,6 +2441,7 @@ tr:hover td { background: var(--blue-faint); }
 <script src="js/db.js"></script>
 <script src="js/admin-services.js"></script>
 <script src="js/admin-v2.js" defer></script>
+<script src="js/admin-refresh.js" defer></script>
 <script>
 'use strict';
 
