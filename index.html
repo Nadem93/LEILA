@@ -119,7 +119,204 @@
 </section>
 
 <!-- ── Nos services ─────────────────────────────────── -->
-<section class="section section-alt" id="nos-services" aria-labelledby="services-title">
+<!-- ── Gouvernance ─────────────────────────────────── -->
+<section class="section section-alt" aria-labelledby="gouv-title" id="gouvernance">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">Notre fonctionnement</span>
+      <h2 id="gouv-title">Gouvernance de l'association</h2>
+      <p class="lead">
+        L'association LEILA est administrée par un Conseil d'administration bénévole.
+        Les décisions stratégiques sont prises collégialement par les membres élus en
+        Assemblée Générale, garantissant un fonctionnement démocratique au service du
+        projet associatif.
+      </p>
+    </div>
+
+    <!-- Présentation des dirigeants -->
+    <div class="grid-3" style="margin-top:3rem;">
+      <article class="card">
+        <div class="card-icon">👩‍💼</div>
+        <h3>Présidence</h3>
+        <p><strong>Schéhérazad DJENANE</strong><br>Présidente de l'association</p>
+        <p>Garante du projet associatif et représentante de l'association auprès des partenaires institutionnels.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon">📋</div>
+        <h3>Conseil d'administration</h3>
+        <p><strong>Membres bénévoles élus</strong><br>Renouvelés en AG annuelle</p>
+        <p>Définit les orientations stratégiques, valide les budgets et veille au respect des valeurs de l'association.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon">👨‍💼</div>
+        <h3>Direction générale</h3>
+        <p><strong>Arnaud BRASSET</strong><br>Directeur général</p>
+        <p>Pilote l'ensemble des 4 établissements et services au quotidien, en lien avec les responsables de chaque structure.</p>
+      </article>
+    </div>
+
+    <!-- Organigramme -->
+    <div class="section-head center" style="margin-top:4rem; margin-bottom:1rem;">
+      <span class="eyebrow">Notre organisation</span>
+      <h2>Organigramme de l'association</h2>
+    </div>
+
+    <div class="org-chart">
+      <!-- Niveau 1 : AG -->
+      <div class="org-level">
+        <div class="org-node org-top">
+          <div class="org-icon">🏛️</div>
+          <strong>Assemblée Générale</strong>
+          <span>Adhérents de l'association</span>
+        </div>
+      </div>
+      <div class="org-connector"></div>
+
+      <!-- Niveau 2 : CA -->
+      <div class="org-level">
+        <div class="org-node org-ca">
+          <div class="org-icon">📋</div>
+          <strong>Conseil d'Administration</strong>
+          <span>Membres bénévoles élus</span>
+        </div>
+      </div>
+      <div class="org-connector"></div>
+
+      <!-- Niveau 3 : Bureau -->
+      <div class="org-level org-grid-4">
+        <div class="org-node">
+          <strong>Schéhérazad DJENANE</strong>
+          <span>Présidente</span>
+        </div>
+        <div class="org-node">
+          <strong>[Nom à compléter]</strong>
+          <span>Vice-Président(e)</span>
+        </div>
+        <div class="org-node">
+          <strong>[Nom à compléter]</strong>
+          <span>Trésorier(e)</span>
+        </div>
+        <div class="org-node">
+          <strong>[Nom à compléter]</strong>
+          <span>Secrétaire</span>
+        </div>
+      </div>
+      <div class="org-connector"></div>
+
+      <!-- Niveau 4 : Direction -->
+      <div class="org-level">
+        <div class="org-node org-direction">
+          <div class="org-icon">👔</div>
+          <strong>Arnaud BRASSET</strong>
+          <span>Directeur général</span>
+        </div>
+      </div>
+      <div class="org-connector"></div>
+
+      <!-- Niveau 5 : Services -->
+      <div class="org-level org-grid-4">
+        <div class="org-node org-svc">
+          <div class="org-icon">🏡</div>
+          <strong>Foyer</strong>
+          <span>Les Trois Rivières · 45 places</span>
+        </div>
+        <div class="org-node org-svc">
+          <div class="org-icon">🎨</div>
+          <strong>SAJ</strong>
+          <span>Accueil de jour · 15 places</span>
+        </div>
+        <div class="org-node org-svc">
+          <div class="org-icon">🤝</div>
+          <strong>SAVS</strong>
+          <span>Accompagnement · 42 places</span>
+        </div>
+        <div class="org-node org-svc">
+          <div class="org-icon">🎒</div>
+          <strong>EMP Henri Wallon</strong>
+          <span>Externat médico-pédagogique</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CSS de l'organigramme (à mettre ici à la fin de la section) -->
+<style>
+.org-chart {
+  max-width: 920px;
+  margin: 2rem auto 0;
+  padding: 0 1rem;
+}
+.org-level {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.org-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .org-grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+.org-node {
+  background: white;
+  border-radius: 14px;
+  border: 2px solid var(--border, #dce7ee);
+  padding: 1.1rem 1.3rem;
+  text-align: center;
+  min-width: 170px;
+  box-shadow: 0 2px 8px rgba(18,45,65,.06);
+  transition: transform .25s, box-shadow .25s;
+}
+.org-node:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(18,45,65,.12);
+}
+.org-node strong {
+  display: block;
+  font-size: .92rem;
+  color: var(--text, #1a2530);
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  margin-bottom: .15rem;
+}
+.org-node span {
+  display: block;
+  font-size: .78rem;
+  color: var(--text-light, #4e5c69);
+}
+.org-icon {
+  font-size: 1.6rem;
+  margin-bottom: .4rem;
+}
+.org-node.org-top {
+  background: linear-gradient(135deg, var(--primary, #256880), var(--primary-dark, #194e62));
+  border-color: var(--primary-dark, #194e62);
+}
+.org-node.org-top strong,
+.org-node.org-top span { color: white; }
+.org-node.org-ca {
+  background: var(--primary-light, #e4f1f7);
+  border-color: var(--primary, #256880);
+}
+.org-node.org-ca strong { color: var(--primary, #256880); }
+.org-node.org-direction {
+  background: var(--accent-light, #fdf1e4);
+  border-color: var(--accent, #d9924a);
+}
+.org-node.org-direction strong { color: var(--accent-dark, #b87030); }
+.org-node.org-svc strong { color: var(--primary, #256880); }
+.org-connector {
+  width: 2px;
+  height: 32px;
+  background: var(--border, #dce7ee);
+  margin: 0 auto;
+}
+</style>
+  <section class="section section-alt" id="nos-services" aria-labelledby="services-title">
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow">4 établissements et services — Association LEILA</span>
