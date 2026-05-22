@@ -10,6 +10,131 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── Cartes cliquables ── */
+.team-card {
+  cursor: pointer;
+  position: relative;
+}
+.team-card:hover {
+  border-color: var(--primary, #256880);
+  box-shadow: 0 8px 28px rgba(37,104,128,.16);
+}
+.team-card-badge {
+  display: inline-block;
+  margin-top: .65rem;
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--primary, #256880);
+  background: var(--primary-light, #e4f1f7);
+  padding: .18rem .65rem;
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.team-card:hover .team-card-badge { opacity: 1; }
+
+/* ── Modal ── */
+.lm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,25,40,.6);
+  backdrop-filter: blur(4px);
+  z-index: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .22s ease;
+}
+.lm-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.lm-box {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(18,45,65,.2);
+  width: 100%;
+  max-width: 780px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(24px) scale(.97);
+  transition: transform .22s cubic-bezier(.4,0,.2,1);
+}
+.lm-overlay.open .lm-box { transform: none; }
+
+.lm-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.3rem 1.7rem 1rem;
+  border-bottom: 1px solid #edf3f7;
+  flex-shrink: 0;
+}
+.lm-head h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  color: #1a2530;
+  margin: 0 0 .1rem;
+}
+.lm-head .lm-sub { font-size: .8rem; color: #8898a6; }
+.lm-close {
+  width: 34px; height: 34px;
+  border: none; border-radius: 50%;
+  background: #f0f4f8; cursor: pointer;
+  font-size: 1rem; color: #4e5c69;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .18s;
+  flex-shrink: 0;
+}
+.lm-close:hover { background: #dce7ee; }
+
+.lm-body {
+  padding: 1.5rem 1.7rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* ── Grille membres ── */
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: 1.1rem;
+}
+.member-card {
+  background: #f6f9fb;
+  border-radius: 14px;
+  padding: 1.2rem 1rem 1rem;
+  text-align: center;
+  border: 1px solid #edf3f7;
+}
+.member-photo {
+  width: 86px; height: 86px;
+  border-radius: 50%; object-fit: cover;
+  display: block; margin: 0 auto .7rem;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 10px rgba(18,45,65,.1);
+}
+.member-placeholder {
+  width: 86px; height: 86px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #256880, #194e62);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.9rem; margin: 0 auto .7rem;
+}
+.member-name { font-weight: 600; font-size: .88rem; color: #1a2530; }
+.member-title { font-size: .76rem; color: #8898a6; margin-top: .1rem; }
+.members-empty {
+  grid-column: 1/-1; text-align: center;
+  padding: 2.5rem 1rem; color: #8898a6;
+}
+.members-empty .e-icon { font-size: 2.2rem; margin-bottom: .6rem; }
+.members-empty p { font-size: .88rem; }
+</style>
 </head>
 <body>
 
@@ -83,9 +208,8 @@
     <div class="section-head center">
       <span class="eyebrow">Notre organisation</span>
       <h2>L'organigramme du foyer</h2>
-      <p class="lead">Une équipe pluridisciplinaire répartie sur plusieurs métiers, au service d'un accompagnement global et cohérent.</p>
+      <p class="lead">Cliquez sur une carte pour découvrir les professionnels du groupe.</p>
     </div>
-
     <div class="team-grid" id="team-list" aria-live="polite"></div>
   </div>
 </section>
@@ -96,7 +220,6 @@
       <span class="eyebrow">Coordination</span>
       <h2>Une dynamique d'équipe structurée</h2>
     </div>
-
     <div class="grid-2">
       <article class="card">
         <div class="card-icon">📅</div>
@@ -128,50 +251,19 @@
       <span class="eyebrow">Accueil de stagiaires</span>
       <h2>Un engagement pour la formation des futurs professionnels</h2>
     </div>
-
     <div class="stats-row">
-      <div class="stat-block">
-        <strong>16</strong>
-        <span>Stagiaires accueillis en 2025</span>
-      </div>
-      <div class="stat-block">
-        <strong>4</strong>
-        <span>Éducateurs spécialisés</span>
-      </div>
-      <div class="stat-block">
-        <strong>2</strong>
-        <span>Moniteurs éducateurs</span>
-      </div>
-      <div class="stat-block">
-        <strong>5</strong>
-        <span>Gestion administrative</span>
-      </div>
+      <div class="stat-block"><strong>16</strong><span>Stagiaires accueillis en 2025</span></div>
+      <div class="stat-block"><strong>4</strong><span>Éducateurs spécialisés</span></div>
+      <div class="stat-block"><strong>2</strong><span>Moniteurs éducateurs</span></div>
+      <div class="stat-block"><strong>5</strong><span>Gestion administrative</span></div>
     </div>
-
     <div class="content-block" style="margin-top: 3rem;">
-      <p>
-        L'année 2025 a été marquée par un engagement soutenu du foyer en faveur de la formation
-        professionnelle. Chaque stagiaire bénéficie d'un accompagnement individualisé, assuré par
-        un tuteur référent au sein de l'établissement.
-      </p>
-      <p>
-        Le foyer est de plus en plus sollicité pour l'accueil de stagiaires, considérant cet
-        accueil comme une opportunité de transmission des savoirs, de questionnement des pratiques
-        professionnelles et d'enrichissement mutuel.
-      </p>
-      <p>
-        L'accueil de stagiaires constitue également, dans certains cas, un véritable
-        <strong>vivier de recrutement</strong> pour l'établissement, contribuant à la continuité
-        et à la stabilité du fonctionnement du foyer.
-      </p>
-
+      <p>L'année 2025 a été marquée par un engagement soutenu du foyer en faveur de la formation professionnelle. Chaque stagiaire bénéficie d'un accompagnement individualisé, assuré par un tuteur référent au sein de l'établissement.</p>
+      <p>Le foyer est de plus en plus sollicité pour l'accueil de stagiaires, considérant cet accueil comme une opportunité de transmission des savoirs, de questionnement des pratiques professionnelles et d'enrichissement mutuel.</p>
+      <p>L'accueil de stagiaires constitue également, dans certains cas, un véritable <strong>vivier de recrutement</strong> pour l'établissement, contribuant à la continuité et à la stabilité du fonctionnement du foyer.</p>
       <div style="margin-top: 2rem; text-align: center;">
-        <a href="candidater.html" class="btn btn-primary" style="font-size: 1.05rem; padding: 1rem 2rem;">
-          🎓 Candidater à un stage
-        </a>
-        <p style="margin-top: .8rem; font-size: .9rem; color: var(--text-light);">
-          Envoyez votre CV et lettre de motivation directement en ligne.
-        </p>
+        <a href="candidater.html" class="btn btn-primary" style="font-size: 1.05rem; padding: 1rem 2rem;">🎓 Candidater à un stage</a>
+        <p style="margin-top: .8rem; font-size: .9rem; color: var(--text-light);">Envoyez votre CV et lettre de motivation directement en ligne.</p>
       </div>
     </div>
   </div>
@@ -182,25 +274,14 @@
     <div class="two-col-text">
       <span class="eyebrow">Partenariats</span>
       <h2>Un réseau d'acteurs au service du parcours</h2>
-      <p>
-        En 2025, la dynamique partenariale s'est renforcée et concrétisée. Une convention de
-        prestation a notamment été signée avec le <strong>GAPAS</strong>, formalisant une volonté
-        commune de coopération et de mutualisation des ressources.
-      </p>
+      <p>En 2025, la dynamique partenariale s'est renforcée et concrétisée. Une convention de prestation a notamment été signée avec le <strong>GAPAS</strong>, formalisant une volonté commune de coopération et de mutualisation des ressources.</p>
       <ul class="check-list" id="partners-list"></ul>
     </div>
     <div class="two-col-visual" style="grid-template-columns: 1fr;">
       <div class="visual-card" style="transform: none; padding: 2.5rem; text-align: left; background: white;">
         <h3 style="font-family: 'Inter', sans-serif; margin-bottom: 1rem; color: var(--primary);">Coordination avec les ESAT</h3>
-        <p style="text-align: left;">
-          Un travail de renforcement partenarial a été mené avec les différents ESAT accueillant
-          les résidents. L'objectif : un accompagnement éducatif plus fluide, plus cohérent et
-          davantage ajusté aux besoins singuliers de chaque résident.
-        </p>
-        <p style="text-align: left; margin-top: 0.8rem;">
-          Pour les personnes accompagnées, le foyer et le travail constituent deux dimensions
-          centrales de leur quotidien, étroitement liées dans leur équilibre global.
-        </p>
+        <p style="text-align: left;">Un travail de renforcement partenarial a été mené avec les différents ESAT accueillant les résidents. L'objectif : un accompagnement éducatif plus fluide, plus cohérent et davantage ajusté aux besoins singuliers de chaque résident.</p>
+        <p style="text-align: left; margin-top: 0.8rem;">Pour les personnes accompagnées, le foyer et le travail constituent deux dimensions centrales de leur quotidien, étroitement liées dans leur équilibre global.</p>
       </div>
     </div>
   </div>
@@ -250,6 +331,22 @@
   </div>
 </footer>
 
+<!-- ═══ MODAL : Photos des professionnels ═══ -->
+<div class="lm-overlay" id="team-modal" role="dialog" aria-modal="true" aria-labelledby="team-modal-title">
+  <div class="lm-box">
+    <div class="lm-head">
+      <div>
+        <h3 id="team-modal-title"></h3>
+        <div class="lm-sub" id="team-modal-sub"></div>
+      </div>
+      <button class="lm-close" id="team-modal-close" aria-label="Fermer">✕</button>
+    </div>
+    <div class="lm-body">
+      <div class="members-grid" id="team-modal-grid"></div>
+    </div>
+  </div>
+</div>
+
 <script src="js/db.js"></script>
 <script src="js/branding.js"></script>
 <script src="js/leila.js"></script>
@@ -259,46 +356,100 @@
   'use strict';
   if (typeof FoyerDB === 'undefined') return;
 
-  const escapeHtml = (s) => String(s == null ? '' : s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  const esc = s => String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
+  /* ── Rendu des cartes équipe ── */
   function renderTeam() {
     const grid = document.getElementById('team-list');
     if (!grid) return;
-    const items = (FoyerDB.getTeam ? FoyerDB.getTeam({ published: true }) : []);
+    const items = FoyerDB.getTeam ? FoyerDB.getTeam({ published: true }) : [];
     if (!items.length) {
       grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-light);">Composition de l\'équipe en cours de mise à jour.</p>';
       return;
     }
-    grid.innerHTML = items.map(t => `
-      <article class="team-card">
-        <div class="team-avatar">${escapeHtml(t.icon || '👥')}</div>
-        ${t.count ? `<span class="team-count">${escapeHtml(t.count)}</span>` : ''}
-        <div class="team-role">${escapeHtml(t.role || '')}</div>
-        ${t.description ? `<p>${escapeHtml(t.description)}</p>` : ''}
-      </article>
-    `).join('');
+    grid.innerHTML = items.map(t => {
+      const nb = Array.isArray(t.members) ? t.members.length : 0;
+      const badge = nb
+        ? `<span class="team-card-badge">👁 ${nb} photo${nb > 1 ? 's' : ''}</span>`
+        : `<span class="team-card-badge">Voir l'équipe →</span>`;
+      return `
+        <article class="team-card" data-team-id="${esc(t.id)}"
+          role="button" tabindex="0"
+          aria-label="Voir les professionnels : ${esc(t.role)}">
+          <div class="team-avatar">${esc(t.icon || '👥')}</div>
+          ${t.count ? `<span class="team-count">${esc(t.count)}</span>` : ''}
+          <div class="team-role">${esc(t.role || '')}</div>
+          ${t.description ? `<p>${esc(t.description)}</p>` : ''}
+          ${badge}
+        </article>`;
+    }).join('');
+
+    grid.querySelectorAll('.team-card').forEach(card => {
+      card.addEventListener('click', () => openModal(card.dataset.teamId));
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(card.dataset.teamId); }
+      });
+    });
   }
 
+  /* ── Ouverture du modal ── */
+  function openModal(teamId) {
+    const item = FoyerDB.getTeamItem ? FoyerDB.getTeamItem(teamId) : null;
+    if (!item) return;
+    const members = Array.isArray(item.members) ? item.members : [];
+
+    document.getElementById('team-modal-title').textContent = item.role || '';
+    document.getElementById('team-modal-sub').textContent = item.count ? '— ' + item.count : '';
+
+    const g = document.getElementById('team-modal-grid');
+    if (!members.length) {
+      g.innerHTML = `
+        <div class="members-empty">
+          <div class="e-icon">📷</div>
+          <p>Aucune photo n'a encore été ajoutée pour ce groupe.<br>
+          <small>Utilisez la page d'administration pour ajouter des photos.</small></p>
+        </div>`;
+    } else {
+      g.innerHTML = members.map(m => `
+        <div class="member-card">
+          ${m.photoData
+            ? `<img src="${m.photoData}" alt="${esc(m.name)}" class="member-photo">`
+            : `<div class="member-placeholder">${esc(item.icon || '👥')}</div>`}
+          <div class="member-name">${esc(m.name || '')}</div>
+          ${m.title ? `<div class="member-title">${esc(m.title)}</div>` : ''}
+        </div>`).join('');
+    }
+
+    const overlay = document.getElementById('team-modal');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('team-modal-close').focus();
+  }
+
+  /* ── Fermeture ── */
+  function closeModal() {
+    document.getElementById('team-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('team-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+  document.getElementById('team-modal-close').addEventListener('click', closeModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  /* ── Partenaires ── */
   function renderPartners() {
     const list = document.getElementById('partners-list');
     if (!list) return;
-    const items = (FoyerDB.getPartners ? FoyerDB.getPartners({ published: true }) : []);
-    if (!items.length) {
-      list.innerHTML = '<li>Liste des partenaires en cours de mise à jour.</li>';
-      return;
-    }
-    list.innerHTML = items.map(p => {
-      const label = p.name + (p.relation ? ' — ' + p.relation : '');
-      return `<li>${escapeHtml(label)}</li>`;
-    }).join('');
+    const items = FoyerDB.getPartners ? FoyerDB.getPartners({ published: true }) : [];
+    if (!items.length) { list.innerHTML = '<li>Liste des partenaires en cours de mise à jour.</li>'; return; }
+    list.innerHTML = items.map(p => `<li>${esc(p.name + (p.relation ? ' — ' + p.relation : ''))}</li>`).join('');
   }
 
   function renderAll() { renderTeam(); renderPartners(); }
   renderAll();
 
-  window.addEventListener('storage', (e) => {
+  window.addEventListener('storage', e => {
     if (e.key === FoyerDB.KEYS.team)     renderTeam();
     if (e.key === FoyerDB.KEYS.partners) renderPartners();
   });
@@ -306,7 +457,7 @@
   window.addEventListener('focus', renderAll);
 })();
 </script>
-  <script src="js/text-colors-runtime.js"></script>
-  <script src="js/section-bgs-runtime.js"></script>
+<script src="js/text-colors-runtime.js"></script>
+<script src="js/section-bgs-runtime.js"></script>
 </body>
 </html>
