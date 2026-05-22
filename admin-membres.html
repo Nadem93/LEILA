@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Photos de l'équipe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px}
+body{font-family:'Inter',system-ui,sans-serif;background:#f0f4f8;color:#1a2530;-webkit-font-smoothing:antialiased;min-height:100vh}
+
+:root{
+  --blue:#256880;--blue-dk:#194e62;--blue-lt:#e4f1f7;--blue-faint:#f0f8fb;
+  --amber:#d9924a;--green:#3a8a52;--red:#d14444;
+  --border:#dce7ee;--radius:10px;--shadow:0 2px 8px rgba(18,45,65,.08);
+  --shadow-md:0 6px 20px rgba(18,45,65,.12);--trans:0.18s ease;
+}
+
+a{color:var(--blue);text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit}
+
+/* ── LOGIN ── */
+#login-screen{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;
+  background:linear-gradient(155deg,#edf4f8 0%,#deedf5 100%);
+}
+.login-card{
+  background:#fff;border-radius:16px;padding:2.5rem 2.5rem 2rem;
+  width:100%;max-width:370px;
+  box-shadow:var(--shadow-md);border:1px solid var(--border);
+}
+.login-logo{display:flex;align-items:center;gap:.8rem;margin-bottom:2rem}
+.login-logo .icon{
+  width:44px;height:44px;border-radius:10px;
+  background:linear-gradient(135deg,var(--blue),var(--blue-dk));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;color:white;
+}
+.login-logo strong{font-size:1.05rem;color:#1a2530}
+.login-logo span{display:block;font-size:.8rem;color:#8898a6}
+.f-group{margin-bottom:1rem}
+.f-group label{display:block;font-size:.83rem;font-weight:600;color:#4e5c69;margin-bottom:.35rem}
+.f-group input{
+  width:100%;padding:.6rem .85rem;border:1px solid var(--border);
+  border-radius:var(--radius);font-size:.95rem;
+  transition:border-color var(--trans);outline:none;
+}
+.f-group input:focus{border-color:var(--blue)}
+.btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.55rem 1.1rem;border:none;border-radius:var(--radius);
+  font-size:.87rem;font-weight:600;cursor:pointer;
+  transition:opacity var(--trans),box-shadow var(--trans);
+}
+.btn:hover{opacity:.88}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-secondary{background:var(--blue-lt);color:var(--blue)}
+.btn-danger{background:#fde8e8;color:var(--red)}
+.btn-full{width:100%;justify-content:center;padding:.75rem}
+.login-err{
+  background:#fde8e8;border:1px solid #f5c0c0;color:var(--red);
+  border-radius:var(--radius);padding:.6rem .9rem;font-size:.85rem;
+  margin-bottom:1rem;display:none;
+}
+
+/* ── APP ── */
+#app{display:none}
+
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:#fff;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:1rem;
+  padding:0 1.5rem;height:56px;
+}
+.topbar-logo{
+  display:flex;align-items:center;gap:.6rem;font-weight:700;
+  color:var(--blue);font-size:1rem;
+}
+.topbar-logo .tl-icon{
+  width:34px;height:34px;border-radius:8px;
+  background:linear-gradient(135deg,var(--blue),var(--blue-dk));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:1rem;
+}
+.topbar-sep{flex:1}
+.topbar-link{
+  font-size:.83rem;color:#8898a6;padding:.35rem .7rem;
+  border-radius:6px;transition:background var(--trans);
+}
+.topbar-link:hover{background:#f0f4f8;color:var(--blue)}
+#btn-logout{
+  background:none;border:1px solid var(--border);
+  color:#8898a6;border-radius:8px;padding:.35rem .8rem;
+  font-size:.82rem;font-weight:500;
+}
+#btn-logout:hover{border-color:#ccc;color:#4e5c69}
+
+.container{max-width:960px;margin:0 auto;padding:2rem 1.5rem}
+
+/* ── En-tête de page ── */
+.page-head{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:1rem;margin-bottom:2rem;flex-wrap:wrap;
+}
+.page-head h1{font-size:1.5rem;font-weight:700;color:#1a2530}
+.page-head p{font-size:.88rem;color:#8898a6;margin-top:.2rem}
+
+/* ── Sélecteur de service ── */
+.service-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.8rem}
+.svc-tab{
+  padding:.4rem 1rem;border-radius:20px;font-size:.83rem;font-weight:600;
+  border:1.5px solid var(--border);background:#fff;color:#4e5c69;
+  cursor:pointer;transition:all var(--trans);
+}
+.svc-tab.active,.svc-tab:hover{
+  background:var(--blue);border-color:var(--blue);color:#fff;
+}
+
+/* ── Grille des groupes ── */
+.groups-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1.2rem;margin-bottom:2rem;
+}
+.group-card{
+  background:#fff;border-radius:14px;border:1px solid var(--border);
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.group-card-head{
+  display:flex;align-items:center;gap:.8rem;
+  padding:1rem 1.1rem;border-bottom:1px solid #edf3f7;
+}
+.group-icon{
+  width:40px;height:40px;border-radius:10px;
+  background:linear-gradient(135deg,var(--blue),var(--blue-dk));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;
+}
+.group-info strong{display:block;font-size:.95rem;color:#1a2530}
+.group-info span{font-size:.78rem;color:#8898a6}
+.group-card-body{padding:1rem 1.1rem}
+.group-members-preview{
+  display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;min-height:28px;
+}
+.member-thumb{
+  width:32px;height:32px;border-radius:50%;
+  object-fit:cover;border:2px solid #fff;
+  box-shadow:0 1px 4px rgba(18,45,65,.12);
+}
+.member-thumb-placeholder{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--blue-lt);color:var(--blue);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;font-weight:700;border:2px solid #fff;
+}
+.no-members-label{font-size:.8rem;color:#aab5be;font-style:italic}
+.group-card-foot{
+  padding:.7rem 1.1rem;border-top:1px solid #edf3f7;
+  display:flex;justify-content:flex-end;
+}
+
+/* ── Panel de gestion des membres ── */
+.members-panel{
+  background:#fff;border-radius:16px;border:1px solid var(--border);
+  box-shadow:var(--shadow-md);margin-bottom:2rem;overflow:hidden;display:none;
+}
+.members-panel.open{display:block}
+.mp-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 1.4rem;border-bottom:1px solid #edf3f7;
+}
+.mp-head h2{font-size:1.05rem;font-weight:700;color:#1a2530}
+.mp-head .mp-sub{font-size:.8rem;color:#8898a6}
+
+.mp-body{padding:1.4rem}
+
+/* Formulaire ajout membre */
+.add-member-form{
+  background:#f6f9fb;border-radius:12px;padding:1.2rem 1.4rem;
+  border:1px solid #edf3f7;margin-bottom:1.5rem;
+}
+.add-member-form h3{font-size:.9rem;font-weight:700;color:#1a2530;margin-bottom:1rem}
+.add-form-row{display:grid;grid-template-columns:1fr 1fr auto;gap:.8rem;align-items:end}
+.f-sm label{display:block;font-size:.78rem;font-weight:600;color:#4e5c69;margin-bottom:.3rem}
+.f-sm input{
+  width:100%;padding:.52rem .8rem;border:1px solid var(--border);
+  border-radius:8px;font-size:.88rem;outline:none;
+  transition:border-color var(--trans);
+}
+.f-sm input:focus{border-color:var(--blue)}
+
+/* Upload photo */
+.photo-upload-area{
+  border:2px dashed var(--border);border-radius:10px;
+  padding:1rem;text-align:center;cursor:pointer;
+  transition:all var(--trans);position:relative;
+  background:#fff;
+}
+.photo-upload-area:hover,.photo-upload-area.drag{
+  border-color:var(--blue);background:var(--blue-faint);
+}
+.photo-upload-area input[type=file]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;
+}
+.photo-preview{
+  width:72px;height:72px;border-radius:50%;object-fit:cover;
+  border:3px solid #fff;box-shadow:var(--shadow);
+  display:none;margin:0 auto .5rem;
+}
+.photo-upload-icon{font-size:1.6rem;margin-bottom:.3rem}
+.photo-upload-text{font-size:.78rem;color:#8898a6}
+
+/* Liste des membres */
+.members-list{display:flex;flex-direction:column;gap:.7rem}
+.member-row{
+  display:flex;align-items:center;gap:.9rem;
+  padding:.7rem 1rem;background:#f6f9fb;
+  border-radius:10px;border:1px solid #edf3f7;
+}
+.mr-photo{
+  width:48px;height:48px;border-radius:50%;
+  object-fit:cover;flex-shrink:0;
+  border:2px solid #fff;box-shadow:var(--shadow);
+}
+.mr-placeholder{
+  width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--blue-dk));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;flex-shrink:0;
+}
+.mr-info{flex:1}
+.mr-info strong{display:block;font-size:.9rem;color:#1a2530}
+.mr-info span{font-size:.78rem;color:#8898a6}
+.mr-del{
+  background:#fde8e8;border:none;color:var(--red);
+  width:30px;height:30px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;flex-shrink:0;transition:background var(--trans);
+}
+.mr-del:hover{background:#f5c0c0}
+.members-empty-msg{
+  text-align:center;padding:2rem;color:#aab5be;font-size:.88rem;font-style:italic;
+}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:1.5rem;right:1.5rem;
+  background:#1a2530;color:#fff;padding:.7rem 1.2rem;
+  border-radius:10px;font-size:.87rem;font-weight:500;
+  transform:translateY(80px);opacity:0;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  z-index:9999;pointer-events:none;max-width:320px;
+}
+.toast.show{transform:none;opacity:1}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- ═══ ÉCRAN DE CONNEXION ═══ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="icon">🌊</div>
+      <div>
+        <strong>Administration</strong>
+        <span>Photos de l'équipe</span>
+      </div>
+    </div>
+    <div class="login-err" id="login-err">Identifiants incorrects.</div>
+    <div class="f-group">
+      <label>Identifiant</label>
+      <input type="text" id="login-user" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="f-group">
+      <label>Mot de passe</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary btn-full" id="btn-login">Se connecter</button>
+  </div>
+</div>
+
+<!-- ═══ APPLICATION ═══ -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div class="tl-icon">🌊</div>
+      Admin — Photos de l'équipe
+    </div>
+    <div class="topbar-sep"></div>
+    <a href="equipe.html" class="topbar-link" target="_blank">↗ Voir la page Équipe</a>
+    <button id="btn-logout">Déconnexion</button>
+  </div>
+
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <h1>Photos des professionnels</h1>
+        <p>Cliquez sur un groupe pour ajouter ou modifier les photos des membres.</p>
+      </div>
+    </div>
+
+    <!-- Onglets de service -->
+    <div class="service-tabs" id="service-tabs"></div>
+
+    <!-- Grille des groupes -->
+    <div class="groups-grid" id="groups-grid"></div>
+
+    <!-- Panel de gestion des membres -->
+    <div class="members-panel" id="members-panel">
+      <div class="mp-head">
+        <div>
+          <h2 id="mp-title">Groupe</h2>
+          <div class="mp-sub" id="mp-sub"></div>
+        </div>
+        <button class="btn btn-secondary" id="mp-close">✕ Fermer</button>
+      </div>
+      <div class="mp-body">
+
+        <!-- Formulaire ajout -->
+        <div class="add-member-form">
+          <h3>➕ Ajouter un professionnel</h3>
+          <div class="add-form-row">
+            <div class="f-sm">
+              <label>Prénom Nom *</label>
+              <input type="text" id="new-name" placeholder="Marie Dupont">
+            </div>
+            <div class="f-sm">
+              <label>Titre / Fonction (optionnel)</label>
+              <input type="text" id="new-title" placeholder="Éducatrice spécialisée">
+            </div>
+            <button class="btn btn-primary" id="btn-add-member">Ajouter</button>
+          </div>
+          <!-- Zone upload photo -->
+          <div style="margin-top:1rem">
+            <label style="display:block;font-size:.78rem;font-weight:600;color:#4e5c69;margin-bottom:.4rem">
+              Photo (optionnelle — JPG, PNG, max 2 Mo)
+            </label>
+            <div class="photo-upload-area" id="photo-drop">
+              <input type="file" id="photo-input" accept="image/*">
+              <img class="photo-preview" id="photo-preview" alt="">
+              <div id="photo-placeholder">
+                <div class="photo-upload-icon">📷</div>
+                <div class="photo-upload-text">Glisser-déposer ou cliquer pour choisir une photo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Liste des membres existants -->
+        <h3 style="font-size:.9rem;font-weight:700;color:#1a2530;margin-bottom:.8rem">
+          Professionnels enregistrés
+        </h3>
+        <div class="members-list" id="members-list"></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/db.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ═══ AUTHENTIFICATION ═══ */
+  const SESSION_KEY = 'leila-admin-session';
+
+  function getPassword() {
+    try {
+      const s = FoyerDB.getSettings ? FoyerDB.getSettings('foyer') : {};
+      return (s && s.adminPassword) ? s.adminPassword : 'foyer2026';
+    } catch { return 'foyer2026'; }
+  }
+
+  function isLogged() { return sessionStorage.getItem(SESSION_KEY) === '1'; }
+  function login(user, pass) {
+    if ((user === 'admin' || user === 'Admin') && pass === getPassword()) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      return true;
+    }
+    return false;
+  }
+
+  if (isLogged()) showApp();
+
+  document.getElementById('btn-login').addEventListener('click', doLogin);
+  document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+  function doLogin() {
+    const u = document.getElementById('login-user').value.trim();
+    const p = document.getElementById('login-pass').value;
+    const err = document.getElementById('login-err');
+    if (login(u, p)) {
+      err.style.display = 'none';
+      showApp();
+    } else {
+      err.style.display = 'block';
+      document.getElementById('login-pass').value = '';
+    }
+  }
+
+  document.getElementById('btn-logout').addEventListener('click', () => {
+    sessionStorage.removeItem(SESSION_KEY);
+    location.reload();
+  });
+
+  /* ═══ APPLICATION ═══ */
+  let currentService = 'foyer';
+  let currentGroupId = null;
+  let pendingPhotoData = null;
+
+  const SERVICES = [
+    { id: 'foyer', label: '🏡 Foyer' },
+    { id: 'saj',   label: '🎨 SAJ' },
+    { id: 'savs',  label: '🤝 SAVS' },
+    { id: 'emp',   label: '🎒 EMP' },
+  ];
+
+  function showApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    renderServiceTabs();
+    renderGroups();
+  }
+
+  /* ── Onglets de service ── */
+  function renderServiceTabs() {
+    const cont = document.getElementById('service-tabs');
+    cont.innerHTML = SERVICES.map(s => `
+      <button class="svc-tab ${s.id === currentService ? 'active' : ''}"
+        data-svc="${s.id}">${s.label}</button>
+    `).join('');
+    cont.querySelectorAll('.svc-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentService = btn.dataset.svc;
+        currentGroupId = null;
+        document.getElementById('members-panel').classList.remove('open');
+        renderServiceTabs();
+        renderGroups();
+      });
+    });
+  }
+
+  /* ── Grille des groupes ── */
+  function renderGroups() {
+    const grid = document.getElementById('groups-grid');
+    const all = FoyerDB.getTeam ? FoyerDB.getTeam({ service: currentService, published: true }) : [];
+    if (!all.length) {
+      grid.innerHTML = '<p style="color:#aab5be;font-style:italic">Aucun groupe trouvé pour ce service.</p>';
+      return;
+    }
+    grid.innerHTML = all.map(t => {
+      const members = Array.isArray(t.members) ? t.members : [];
+      const thumbs = members.slice(0, 5).map(m => m.photoData
+        ? `<img src="${m.photoData}" class="member-thumb" alt="${esc(m.name)}">`
+        : `<div class="member-thumb-placeholder">${esc((m.name||'?')[0].toUpperCase())}</div>`
+      ).join('');
+      const extra = members.length > 5 ? `<div class="member-thumb-placeholder">+${members.length-5}</div>` : '';
+      return `
+        <div class="group-card">
+          <div class="group-card-head">
+            <div class="group-icon">${esc(t.icon||'👥')}</div>
+            <div class="group-info">
+              <strong>${esc(t.role||'')}</strong>
+              <span>${esc(t.count||'')}</span>
+            </div>
+          </div>
+          <div class="group-card-body">
+            <div class="group-members-preview">
+              ${thumbs||extra ? (thumbs+extra) : '<span class="no-members-label">Aucune photo ajoutée</span>'}
+            </div>
+            <p style="font-size:.78rem;color:#8898a6">${members.length} membre${members.length>1?'s':''} enregistré${members.length>1?'s':''}</p>
+          </div>
+          <div class="group-card-foot">
+            <button class="btn btn-secondary" data-group-id="${esc(t.id)}" onclick="openGroup('${esc(t.id)}')">
+              ✏️ Gérer les photos
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  /* ── Ouvrir le panel d'un groupe ── */
+  window.openGroup = function(groupId) {
+    currentGroupId = groupId;
+    pendingPhotoData = null;
+    resetPhotoInput();
+
+    const item = FoyerDB.getTeamItem ? FoyerDB.getTeamItem(groupId) : null;
+    if (!item) return;
+
+    document.getElementById('mp-title').textContent = item.role || '';
+    document.getElementById('mp-sub').textContent = item.count || '';
+    document.getElementById('new-name').value = '';
+    document.getElementById('new-title').value = '';
+
+    renderMembersList(item);
+
+    const panel = document.getElementById('members-panel');
+    panel.classList.add('open');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  document.getElementById('mp-close').addEventListener('click', () => {
+    document.getElementById('members-panel').classList.remove('open');
+    currentGroupId = null;
+  });
+
+  /* ── Liste des membres dans le panel ── */
+  function renderMembersList(item) {
+    const list = document.getElementById('members-list');
+    const members = Array.isArray(item.members) ? item.members : [];
+    if (!members.length) {
+      list.innerHTML = '<div class="members-empty-msg">Aucun professionnel enregistré pour ce groupe.</div>';
+      return;
+    }
+    list.innerHTML = members.map(m => {
+      const photo = m.photoData
+        ? `<img src="${m.photoData}" class="mr-photo" alt="${esc(m.name)}">`
+        : `<div class="mr-placeholder">${esc(item.icon||'👥')}</div>`;
+      return `
+        <div class="member-row" data-member-id="${esc(m.id)}">
+          ${photo}
+          <div class="mr-info">
+            <strong>${esc(m.name||'')}</strong>
+            <span>${esc(m.title||'')}</span>
+          </div>
+          <button class="mr-del" title="Supprimer" onclick="deleteMember('${esc(m.id)}')">🗑</button>
+        </div>`;
+    }).join('');
+  }
+
+  /* ── Upload photo ── */
+  document.getElementById('photo-input').addEventListener('change', function() {
+    handleFileInput(this.files[0]);
+  });
+
+  const dropZone = document.getElementById('photo-drop');
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag');
+    handleFileInput(e.dataTransfer.files[0]);
+  });
+
+  function handleFileInput(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    if (file.size > 2 * 1024 * 1024) { showToast('Image trop volumineuse (max 2 Mo)', 'error'); return; }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      pendingPhotoData = e.target.result;
+      const preview = document.getElementById('photo-preview');
+      const placeholder = document.getElementById('photo-placeholder');
+      preview.src = pendingPhotoData;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resetPhotoInput() {
+    pendingPhotoData = null;
+    document.getElementById('photo-input').value = '';
+    document.getElementById('photo-preview').style.display = 'none';
+    document.getElementById('photo-placeholder').style.display = 'block';
+    document.getElementById('photo-preview').src = '';
+  }
+
+  /* ── Ajouter un membre ── */
+  document.getElementById('btn-add-member').addEventListener('click', addMember);
+  document.getElementById('new-name').addEventListener('keydown', e => { if (e.key === 'Enter') addMember(); });
+
+  function addMember() {
+    if (!currentGroupId) return;
+    const name = document.getElementById('new-name').value.trim();
+    const title = document.getElementById('new-title').value.trim();
+    if (!name) { showToast('Veuillez saisir un prénom et un nom.', 'error'); return; }
+
+    const item = FoyerDB.getTeamItem(currentGroupId);
+    if (!item) return;
+    if (!Array.isArray(item.members)) item.members = [];
+
+    item.members.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+      name,
+      title,
+      photoData: pendingPhotoData || ''
+    });
+
+    FoyerDB.saveTeamItem(item);
+    document.getElementById('new-name').value = '';
+    document.getElementById('new-title').value = '';
+    resetPhotoInput();
+    renderMembersList(item);
+    renderGroups();
+    showToast(`${name} ajouté(e) avec succès`, 'success');
+  }
+
+  /* ── Supprimer un membre ── */
+  window.deleteMember = function(memberId) {
+    if (!currentGroupId) return;
+    if (!confirm('Supprimer ce professionnel ?')) return;
+    const item = FoyerDB.getTeamItem(currentGroupId);
+    if (!item || !Array.isArray(item.members)) return;
+    const name = (item.members.find(m => m.id === memberId) || {}).name || '';
+    item.members = item.members.filter(m => m.id !== memberId);
+    FoyerDB.saveTeamItem(item);
+    renderMembersList(item);
+    renderGroups();
+    showToast(`${name} supprimé(e)`, 'success');
+  };
+
+  /* ── Toast ── */
+  let toastTimer;
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (type ? ' ' + type : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.className = 'toast'; }, 3000);
+  }
+
+  /* ── Helper ── */
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+})();
+</script>
+</body>
+</html>
