@@ -11,129 +11,110 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ── Cartes cliquables ── */
+/* ═══ Cartes cliquables (override forcé) ═══ */
 .team-card {
-  cursor: pointer;
+  cursor: pointer !important;
   position: relative;
+  transition: all .25s cubic-bezier(.4,0,.2,1);
+  user-select: none;
 }
 .team-card:hover {
-  border-color: var(--primary, #256880);
-  box-shadow: 0 8px 28px rgba(37,104,128,.16);
+  transform: translateY(-5px) !important;
+  border-color: var(--primary, #256880) !important;
+  box-shadow: 0 12px 32px rgba(37,104,128,.2) !important;
 }
 .team-card-badge {
   display: inline-block;
-  margin-top: .65rem;
+  margin-top: .8rem;
   font-size: .72rem;
-  font-weight: 600;
-  color: var(--primary, #256880);
-  background: var(--primary-light, #e4f1f7);
-  padding: .18rem .65rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--primary, #256880);
+  padding: .25rem .75rem;
   border-radius: 20px;
-  opacity: 0;
-  transition: opacity .2s;
+  box-shadow: 0 2px 6px rgba(37,104,128,.25);
 }
-.team-card:hover .team-card-badge { opacity: 1; }
 
-/* ── Modal ── */
+/* ═══ Modal ═══ */
 .lm-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(10,25,40,.6);
-  backdrop-filter: blur(4px);
-  z-index: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: fixed; inset: 0;
+  background: rgba(10,25,40,.65);
+  backdrop-filter: blur(5px);
+  z-index: 9000;
+  display: none;
+  align-items: center; justify-content: center;
   padding: 1rem;
   opacity: 0;
-  pointer-events: none;
   transition: opacity .22s ease;
 }
-.lm-overlay.open {
-  opacity: 1;
-  pointer-events: auto;
-}
+.lm-overlay.open { display: flex; opacity: 1; }
 .lm-box {
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(18,45,65,.2);
-  width: 100%;
-  max-width: 780px;
+  box-shadow: 0 24px 64px rgba(18,45,65,.25);
+  width: 100%; max-width: 800px;
   max-height: 88vh;
-  display: flex;
-  flex-direction: column;
-  transform: translateY(24px) scale(.97);
+  display: flex; flex-direction: column;
+  transform: translateY(28px) scale(.96);
   transition: transform .22s cubic-bezier(.4,0,.2,1);
 }
 .lm-overlay.open .lm-box { transform: none; }
-
 .lm-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.3rem 1.7rem 1rem;
-  border-bottom: 1px solid #edf3f7;
-  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.3rem 1.7rem 1.1rem;
+  border-bottom: 1px solid #edf3f7; flex-shrink: 0;
 }
 .lm-head h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.2rem;
-  color: #1a2530;
-  margin: 0 0 .1rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.25rem; color: #1a2530; margin: 0 0 .15rem;
 }
-.lm-head .lm-sub { font-size: .8rem; color: #8898a6; }
+.lm-head .lm-sub { font-size: .82rem; color: #8898a6; }
 .lm-close {
-  width: 34px; height: 34px;
+  width: 36px; height: 36px;
   border: none; border-radius: 50%;
   background: #f0f4f8; cursor: pointer;
-  font-size: 1rem; color: #4e5c69;
+  font-size: 1.1rem; color: #4e5c69;
   display: flex; align-items: center; justify-content: center;
-  transition: background .18s;
-  flex-shrink: 0;
+  flex-shrink: 0; transition: background .18s;
 }
 .lm-close:hover { background: #dce7ee; }
+.lm-body { padding: 1.6rem 1.7rem; overflow-y: auto; flex: 1; }
 
-.lm-body {
-  padding: 1.5rem 1.7rem;
-  overflow-y: auto;
-  flex: 1;
-}
-
-/* ── Grille membres ── */
 .members-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-  gap: 1.1rem;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1.2rem;
 }
 .member-card {
   background: #f6f9fb;
   border-radius: 14px;
-  padding: 1.2rem 1rem 1rem;
+  padding: 1.3rem 1rem 1.1rem;
   text-align: center;
   border: 1px solid #edf3f7;
 }
 .member-photo {
-  width: 86px; height: 86px;
+  width: 88px; height: 88px;
   border-radius: 50%; object-fit: cover;
-  display: block; margin: 0 auto .7rem;
+  display: block; margin: 0 auto .75rem;
   border: 3px solid #fff;
-  box-shadow: 0 2px 10px rgba(18,45,65,.1);
+  box-shadow: 0 2px 10px rgba(18,45,65,.12);
 }
 .member-placeholder {
-  width: 86px; height: 86px;
+  width: 88px; height: 88px;
   border-radius: 50%;
   background: linear-gradient(135deg, #256880, #194e62);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.9rem; margin: 0 auto .7rem;
+  font-size: 2rem; margin: 0 auto .75rem; color: #fff;
 }
-.member-name { font-weight: 600; font-size: .88rem; color: #1a2530; }
-.member-title { font-size: .76rem; color: #8898a6; margin-top: .1rem; }
+.member-name { font-weight: 600; font-size: .9rem; color: #1a2530; line-height: 1.3; }
+.member-title { font-size: .77rem; color: #8898a6; margin-top: .15rem; }
 .members-empty {
   grid-column: 1/-1; text-align: center;
-  padding: 2.5rem 1rem; color: #8898a6;
+  padding: 3rem 1rem; color: #8898a6;
 }
-.members-empty .e-icon { font-size: 2.2rem; margin-bottom: .6rem; }
-.members-empty p { font-size: .88rem; }
+.members-empty .e-icon { font-size: 2.6rem; margin-bottom: .7rem; }
+.members-empty p { font-size: .92rem; line-height: 1.5; }
+.members-empty small { color: #aab5be; }
 </style>
 </head>
 <body>
@@ -208,7 +189,7 @@
     <div class="section-head center">
       <span class="eyebrow">Notre organisation</span>
       <h2>L'organigramme du foyer</h2>
-      <p class="lead">Cliquez sur une carte pour découvrir les professionnels du groupe.</p>
+      <p class="lead">👆 Cliquez sur une carte pour découvrir les photos des professionnels.</p>
     </div>
     <div class="team-grid" id="team-list" aria-live="polite"></div>
   </div>
@@ -331,18 +312,18 @@
   </div>
 </footer>
 
-<!-- ═══ MODAL : Photos des professionnels ═══ -->
-<div class="lm-overlay" id="team-modal" role="dialog" aria-modal="true" aria-labelledby="team-modal-title">
+<!-- ═══ MODAL Photos pros ═══ -->
+<div class="lm-overlay" id="teamModal" role="dialog" aria-modal="true">
   <div class="lm-box">
     <div class="lm-head">
       <div>
-        <h3 id="team-modal-title"></h3>
-        <div class="lm-sub" id="team-modal-sub"></div>
+        <h3 id="teamModalTitle">—</h3>
+        <div class="lm-sub" id="teamModalSub"></div>
       </div>
-      <button class="lm-close" id="team-modal-close" aria-label="Fermer">✕</button>
+      <button class="lm-close" id="teamModalClose" aria-label="Fermer" onclick="window.closeTeamModal()">✕</button>
     </div>
     <div class="lm-body">
-      <div class="members-grid" id="team-modal-grid"></div>
+      <div class="members-grid" id="teamModalGrid"></div>
     </div>
   </div>
 </div>
@@ -352,108 +333,116 @@
 <script src="js/leila.js"></script>
 <script src="js/script.js"></script>
 <script>
+/* ═══════════════════════════════════════
+   Fonctions GLOBALES (accessibles via onclick=)
+═══════════════════════════════════════ */
+function escHTML(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* Ouvre le modal pour un groupe donné */
+window.openTeamModal = function(teamId) {
+  if (typeof FoyerDB === 'undefined' || !FoyerDB.getTeamItem) return;
+  var item = FoyerDB.getTeamItem(teamId);
+  if (!item) { alert('Groupe introuvable : ' + teamId); return; }
+
+  var members = Array.isArray(item.members) ? item.members : [];
+  document.getElementById('teamModalTitle').textContent = item.role || '';
+  document.getElementById('teamModalSub').textContent = item.count ? '— ' + item.count : '';
+
+  var g = document.getElementById('teamModalGrid');
+  if (members.length === 0) {
+    g.innerHTML =
+      '<div class="members-empty">' +
+      '<div class="e-icon">📷</div>' +
+      '<p>Aucune photo n\'a encore été ajoutée pour ce groupe.<br>' +
+      '<small>Les photos peuvent être ajoutées depuis la page d\'administration.</small></p>' +
+      '</div>';
+  } else {
+    g.innerHTML = members.map(function(m) {
+      var photo = m.photoData
+        ? '<img src="' + m.photoData + '" alt="' + escHTML(m.name) + '" class="member-photo">'
+        : '<div class="member-placeholder">' + escHTML(item.icon || '👥') + '</div>';
+      return '<div class="member-card">' + photo +
+        '<div class="member-name">' + escHTML(m.name || '') + '</div>' +
+        (m.title ? '<div class="member-title">' + escHTML(m.title) + '</div>' : '') +
+        '</div>';
+    }).join('');
+  }
+
+  document.getElementById('teamModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeTeamModal = function() {
+  document.getElementById('teamModal').classList.remove('open');
+  document.body.style.overflow = '';
+};
+
+/* Fermer en cliquant sur le fond */
+document.addEventListener('DOMContentLoaded', function() {
+  var overlay = document.getElementById('teamModal');
+  if (overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) window.closeTeamModal();
+    });
+  }
+  /* Fermer avec Escape */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') window.closeTeamModal();
+  });
+});
+
+/* ═══════════════════════════════════════
+   RENDU DE LA PAGE
+═══════════════════════════════════════ */
 (function () {
   'use strict';
   if (typeof FoyerDB === 'undefined') return;
 
-  const esc = s => String(s == null ? '' : s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-
-  /* ── Rendu des cartes équipe ── */
   function renderTeam() {
-    const grid = document.getElementById('team-list');
+    var grid = document.getElementById('team-list');
     if (!grid) return;
-    const items = FoyerDB.getTeam ? FoyerDB.getTeam({ published: true }) : [];
+    var items = FoyerDB.getTeam ? FoyerDB.getTeam({ published: true }) : [];
     if (!items.length) {
       grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-light);">Composition de l\'équipe en cours de mise à jour.</p>';
       return;
     }
-    grid.innerHTML = items.map(t => {
-      const nb = Array.isArray(t.members) ? t.members.length : 0;
-      const badge = nb
-        ? `<span class="team-card-badge">👁 ${nb} photo${nb > 1 ? 's' : ''}</span>`
-        : `<span class="team-card-badge">Voir l'équipe →</span>`;
-      return `
-        <article class="team-card" data-team-id="${esc(t.id)}"
-          role="button" tabindex="0"
-          aria-label="Voir les professionnels : ${esc(t.role)}">
-          <div class="team-avatar">${esc(t.icon || '👥')}</div>
-          ${t.count ? `<span class="team-count">${esc(t.count)}</span>` : ''}
-          <div class="team-role">${esc(t.role || '')}</div>
-          ${t.description ? `<p>${esc(t.description)}</p>` : ''}
-          ${badge}
-        </article>`;
+    grid.innerHTML = items.map(function(t) {
+      var nb = Array.isArray(t.members) ? t.members.length : 0;
+      var label = nb > 0
+        ? '👁 Voir les ' + nb + ' photo' + (nb > 1 ? 's' : '')
+        : '👁 Voir l\'équipe';
+      return '<article class="team-card" onclick="window.openTeamModal(\'' + escHTML(t.id) + '\')">' +
+        '<div class="team-avatar">' + escHTML(t.icon || '👥') + '</div>' +
+        (t.count ? '<span class="team-count">' + escHTML(t.count) + '</span>' : '') +
+        '<div class="team-role">' + escHTML(t.role || '') + '</div>' +
+        (t.description ? '<p>' + escHTML(t.description) + '</p>' : '') +
+        '<span class="team-card-badge">' + label + '</span>' +
+        '</article>';
     }).join('');
-
-    grid.querySelectorAll('.team-card').forEach(card => {
-      card.addEventListener('click', () => openModal(card.dataset.teamId));
-      card.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(card.dataset.teamId); }
-      });
-    });
   }
 
-  /* ── Ouverture du modal ── */
-  function openModal(teamId) {
-    const item = FoyerDB.getTeamItem ? FoyerDB.getTeamItem(teamId) : null;
-    if (!item) return;
-    const members = Array.isArray(item.members) ? item.members : [];
-
-    document.getElementById('team-modal-title').textContent = item.role || '';
-    document.getElementById('team-modal-sub').textContent = item.count ? '— ' + item.count : '';
-
-    const g = document.getElementById('team-modal-grid');
-    if (!members.length) {
-      g.innerHTML = `
-        <div class="members-empty">
-          <div class="e-icon">📷</div>
-          <p>Aucune photo n'a encore été ajoutée pour ce groupe.<br>
-          <small>Utilisez la page d'administration pour ajouter des photos.</small></p>
-        </div>`;
-    } else {
-      g.innerHTML = members.map(m => `
-        <div class="member-card">
-          ${m.photoData
-            ? `<img src="${m.photoData}" alt="${esc(m.name)}" class="member-photo">`
-            : `<div class="member-placeholder">${esc(item.icon || '👥')}</div>`}
-          <div class="member-name">${esc(m.name || '')}</div>
-          ${m.title ? `<div class="member-title">${esc(m.title)}</div>` : ''}
-        </div>`).join('');
-    }
-
-    const overlay = document.getElementById('team-modal');
-    overlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    document.getElementById('team-modal-close').focus();
-  }
-
-  /* ── Fermeture ── */
-  function closeModal() {
-    document.getElementById('team-modal').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  document.getElementById('team-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
-  document.getElementById('team-modal-close').addEventListener('click', closeModal);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-  /* ── Partenaires ── */
   function renderPartners() {
-    const list = document.getElementById('partners-list');
+    var list = document.getElementById('partners-list');
     if (!list) return;
-    const items = FoyerDB.getPartners ? FoyerDB.getPartners({ published: true }) : [];
+    var items = FoyerDB.getPartners ? FoyerDB.getPartners({ published: true }) : [];
     if (!items.length) { list.innerHTML = '<li>Liste des partenaires en cours de mise à jour.</li>'; return; }
-    list.innerHTML = items.map(p => `<li>${esc(p.name + (p.relation ? ' — ' + p.relation : ''))}</li>`).join('');
+    list.innerHTML = items.map(function(p) {
+      return '<li>' + escHTML(p.name + (p.relation ? ' — ' + p.relation : '')) + '</li>';
+    }).join('');
   }
 
   function renderAll() { renderTeam(); renderPartners(); }
   renderAll();
 
-  window.addEventListener('storage', e => {
+  window.addEventListener('storage', function(e) {
     if (e.key === FoyerDB.KEYS.team)     renderTeam();
     if (e.key === FoyerDB.KEYS.partners) renderPartners();
   });
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) renderAll(); });
+  document.addEventListener('visibilitychange', function() { if (!document.hidden) renderAll(); });
   window.addEventListener('focus', renderAll);
 })();
 </script>
