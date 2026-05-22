@@ -1132,7 +1132,7 @@ ul { list-style: none; }
 /* ===== Page Header (inner pages) ===== */
 .page-header {
   background: linear-gradient(155deg, #edf4f8 0%, #deedf5 50%, #e9f4f9 100%);
-  padding: 4rem 0 3rem;
+  padding: 4rem 0 4rem;
   text-align: center;
   position: relative;
   overflow: hidden;
