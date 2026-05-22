@@ -11,110 +11,211 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ═══ Cartes cliquables (override forcé) ═══ */
-.team-card {
-  cursor: pointer !important;
+/* ═══════════════════════════════════════
+   CARTES ÉQUIPE — FLIP 3D + DIAPORAMA
+═══════════════════════════════════════ */
+
+/* Conteneur de la carte (perspective 3D) */
+.team-card-flip {
+  perspective: 1200px;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  min-height: 320px;
+  cursor: pointer;
+}
+.team-card-flip:hover .face-front { transform: translateY(-5px); }
+
+/* Inner — ce qui tourne */
+.flip-inner {
   position: relative;
-  transition: all .25s cubic-bezier(.4,0,.2,1);
-  user-select: none;
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  transition: transform 0.7s cubic-bezier(.4, 0, .2, 1);
+  transform-style: preserve-3d;
 }
-.team-card:hover {
-  transform: translateY(-5px) !important;
-  border-color: var(--primary, #256880) !important;
-  box-shadow: 0 12px 32px rgba(37,104,128,.2) !important;
+.team-card-flip.is-flipped .flip-inner {
+  transform: rotateY(180deg);
 }
-.team-card-badge {
+
+/* Faces */
+.face {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: var(--radius, 14px);
+  background: #fff;
+  border: 1px solid var(--border-soft, #edf3f7);
+  box-shadow: 0 2px 8px rgba(18,45,65,.07);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* RECTO */
+.face-front {
+  padding: 1.8rem 1.4rem;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  transition: transform .25s, box-shadow .25s, border-color .25s;
+}
+.team-card-flip:hover .face-front {
+  border-color: var(--primary, #256880);
+  box-shadow: 0 12px 32px rgba(37,104,128,.18);
+}
+.face-front .team-avatar {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, var(--primary, #256880), var(--primary-dark, #194e62));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; color: white;
+  margin: 0 auto 1rem;
+}
+.face-front .team-count {
   display: inline-block;
-  margin-top: .8rem;
-  font-size: .72rem;
+  background: var(--accent, #d9924a);
+  color: white;
+  padding: 0.2rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.face-front .team-role {
+  color: var(--primary, #256880);
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+.face-front p {
+  font-size: 0.87rem;
+  color: var(--text-light, #4e5c69);
+  line-height: 1.5;
+}
+.face-front .flip-hint {
+  margin-top: auto;
+  padding-top: .9rem;
+  font-size: .73rem;
   font-weight: 700;
   color: #fff;
   background: var(--primary, #256880);
-  padding: .25rem .75rem;
-  border-radius: 20px;
+  padding: .3rem .8rem;
+  border-radius: 18px;
+  align-self: center;
   box-shadow: 0 2px 6px rgba(37,104,128,.25);
 }
 
-/* ═══ Modal ═══ */
-.lm-overlay {
-  position: fixed; inset: 0;
-  background: rgba(10,25,40,.65);
-  backdrop-filter: blur(5px);
-  z-index: 9000;
-  display: none;
-  align-items: center; justify-content: center;
-  padding: 1rem;
-  opacity: 0;
-  transition: opacity .22s ease;
-}
-.lm-overlay.open { display: flex; opacity: 1; }
-.lm-box {
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 24px 64px rgba(18,45,65,.25);
-  width: 100%; max-width: 800px;
-  max-height: 88vh;
-  display: flex; flex-direction: column;
-  transform: translateY(28px) scale(.96);
-  transition: transform .22s cubic-bezier(.4,0,.2,1);
-}
-.lm-overlay.open .lm-box { transform: none; }
-.lm-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1.3rem 1.7rem 1.1rem;
-  border-bottom: 1px solid #edf3f7; flex-shrink: 0;
-}
-.lm-head h3 {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.25rem; color: #1a2530; margin: 0 0 .15rem;
-}
-.lm-head .lm-sub { font-size: .82rem; color: #8898a6; }
-.lm-close {
-  width: 36px; height: 36px;
-  border: none; border-radius: 50%;
-  background: #f0f4f8; cursor: pointer;
-  font-size: 1.1rem; color: #4e5c69;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: background .18s;
-}
-.lm-close:hover { background: #dce7ee; }
-.lm-body { padding: 1.6rem 1.7rem; overflow-y: auto; flex: 1; }
-
-.members-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1.2rem;
-}
-.member-card {
-  background: #f6f9fb;
-  border-radius: 14px;
-  padding: 1.3rem 1rem 1.1rem;
+/* VERSO */
+.face-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(160deg, #f6f9fb 0%, #ecf3f7 100%);
+  padding: 1.3rem 1.1rem 1.1rem;
   text-align: center;
-  border: 1px solid #edf3f7;
 }
-.member-photo {
-  width: 88px; height: 88px;
-  border-radius: 50%; object-fit: cover;
-  display: block; margin: 0 auto .75rem;
-  border: 3px solid #fff;
-  box-shadow: 0 2px 10px rgba(18,45,65,.12);
+
+.back-top {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: .6rem;
 }
-.member-placeholder {
-  width: 88px; height: 88px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #256880, #194e62);
+.back-close {
+  width: 30px; height: 30px;
+  border: none; border-radius: 50%;
+  background: #fff; color: #4e5c69;
+  cursor: pointer; font-size: .9rem;
   display: flex; align-items: center; justify-content: center;
-  font-size: 2rem; margin: 0 auto .75rem; color: #fff;
+  box-shadow: 0 1px 4px rgba(18,45,65,.1);
+  transition: background .15s;
 }
-.member-name { font-weight: 600; font-size: .9rem; color: #1a2530; line-height: 1.3; }
-.member-title { font-size: .77rem; color: #8898a6; margin-top: .15rem; }
-.members-empty {
-  grid-column: 1/-1; text-align: center;
-  padding: 3rem 1rem; color: #8898a6;
+.back-close:hover { background: var(--primary-light, #e4f1f7); color: var(--primary, #256880); }
+.back-counter {
+  font-size: .72rem; font-weight: 600;
+  color: var(--primary, #256880);
+  background: #fff;
+  padding: .2rem .55rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(18,45,65,.08);
 }
-.members-empty .e-icon { font-size: 2.6rem; margin-bottom: .7rem; }
-.members-empty p { font-size: .92rem; line-height: 1.5; }
-.members-empty small { color: #aab5be; }
+
+.back-body {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: .5rem .3rem .4rem;
+}
+.back-photo {
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 14px rgba(18,45,65,.18);
+  margin-bottom: .7rem;
+}
+.back-photo-placeholder {
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary, #256880), var(--primary-dark, #194e62));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem;
+  margin-bottom: .7rem;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 14px rgba(18,45,65,.18);
+  color: white;
+}
+.back-name {
+  font-weight: 700;
+  font-size: .98rem;
+  color: #1a2530;
+  margin-bottom: .15rem;
+  line-height: 1.25;
+}
+.back-title {
+  font-size: .82rem;
+  color: #4e5c69;
+  line-height: 1.35;
+}
+
+.back-empty {
+  text-align: center;
+  padding: 1rem .5rem;
+}
+.back-empty .be-icon { font-size: 2.6rem; margin-bottom: .5rem; }
+.back-empty .be-title {
+  font-weight: 700; color: var(--primary, #256880);
+  font-size: 1rem; margin-bottom: .3rem;
+}
+.back-empty .be-text {
+  font-size: .82rem; color: #8898a6; line-height: 1.4;
+}
+
+/* Flèches navigation */
+.back-nav {
+  display: flex; justify-content: space-between;
+  margin-top: .4rem;
+  gap: .6rem;
+}
+.nav-arrow {
+  width: 38px; height: 38px;
+  border: none; border-radius: 50%;
+  background: var(--primary, #256880);
+  color: #fff; cursor: pointer;
+  font-size: 1rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(37,104,128,.28);
+  transition: transform .15s, background .15s;
+}
+.nav-arrow:hover { background: var(--primary-dark, #194e62); transform: scale(1.08); }
+.nav-arrow:active { transform: scale(.96); }
+.nav-arrow.disabled {
+  background: #cfd8de; cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Désactiver l'effet hover quand carte retournée */
+.team-card-flip.is-flipped:hover .face-front { transform: none; }
 </style>
 </head>
 <body>
@@ -189,7 +290,7 @@
     <div class="section-head center">
       <span class="eyebrow">Notre organisation</span>
       <h2>L'organigramme du foyer</h2>
-      <p class="lead">👆 Cliquez sur une carte pour découvrir les photos des professionnels.</p>
+      <p class="lead">👆 Cliquez sur une carte pour la retourner et découvrir les professionnels.</p>
     </div>
     <div class="team-grid" id="team-list" aria-live="polite"></div>
   </div>
@@ -312,92 +413,123 @@
   </div>
 </footer>
 
-<!-- ═══ MODAL Photos pros ═══ -->
-<div class="lm-overlay" id="teamModal" role="dialog" aria-modal="true">
-  <div class="lm-box">
-    <div class="lm-head">
-      <div>
-        <h3 id="teamModalTitle">—</h3>
-        <div class="lm-sub" id="teamModalSub"></div>
-      </div>
-      <button class="lm-close" id="teamModalClose" aria-label="Fermer" onclick="window.closeTeamModal()">✕</button>
-    </div>
-    <div class="lm-body">
-      <div class="members-grid" id="teamModalGrid"></div>
-    </div>
-  </div>
-</div>
-
 <script src="js/db.js"></script>
 <script src="js/branding.js"></script>
 <script src="js/leila.js"></script>
 <script src="js/script.js"></script>
 <script>
-/* ═══════════════════════════════════════
-   Fonctions GLOBALES (accessibles via onclick=)
-═══════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   FONCTIONS GLOBALES (utilisées via onclick=)
+═══════════════════════════════════════════════ */
 function escHTML(s) {
   return String(s == null ? '' : s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-/* Ouvre le modal pour un groupe donné */
-window.openTeamModal = function(teamId) {
-  if (typeof FoyerDB === 'undefined' || !FoyerDB.getTeamItem) return;
+/* Index courant des diaporamas — clé = teamId */
+window.flipState = window.flipState || {};
+
+/* Retourner la carte (recto → verso) */
+window.flipCard = function(teamId, event) {
+  if (event) event.stopPropagation();
+  var card = document.querySelector('.team-card-flip[data-team-id="' + teamId + '"]');
+  if (!card) return;
+  card.classList.add('is-flipped');
+  window.flipState[teamId] = 0;
+  renderBack(teamId);
+};
+
+/* Revenir au recto */
+window.flipBack = function(teamId, event) {
+  if (event) event.stopPropagation();
+  var card = document.querySelector('.team-card-flip[data-team-id="' + teamId + '"]');
+  if (!card) return;
+  card.classList.remove('is-flipped');
+};
+
+/* Navigation diaporama */
+window.flipNext = function(teamId, event) {
+  if (event) event.stopPropagation();
   var item = FoyerDB.getTeamItem(teamId);
-  if (!item) { alert('Groupe introuvable : ' + teamId); return; }
-
+  if (!item) return;
   var members = Array.isArray(item.members) ? item.members : [];
-  document.getElementById('teamModalTitle').textContent = item.role || '';
-  document.getElementById('teamModalSub').textContent = item.count ? '— ' + item.count : '';
+  if (!members.length) return;
+  var idx = window.flipState[teamId] || 0;
+  idx = (idx + 1) % members.length; /* boucle */
+  window.flipState[teamId] = idx;
+  renderBack(teamId);
+};
 
-  var g = document.getElementById('teamModalGrid');
-  if (members.length === 0) {
-    g.innerHTML =
-      '<div class="members-empty">' +
-      '<div class="e-icon">📷</div>' +
-      '<p>Aucune photo n\'a encore été ajoutée pour ce groupe.<br>' +
-      '<small>Les photos peuvent être ajoutées depuis la page d\'administration.</small></p>' +
-      '</div>';
+window.flipPrev = function(teamId, event) {
+  if (event) event.stopPropagation();
+  var item = FoyerDB.getTeamItem(teamId);
+  if (!item) return;
+  var members = Array.isArray(item.members) ? item.members : [];
+  if (!members.length) return;
+  var idx = window.flipState[teamId] || 0;
+  idx = (idx - 1 + members.length) % members.length; /* boucle */
+  window.flipState[teamId] = idx;
+  renderBack(teamId);
+};
+
+/* Rendu du verso (photo + nom + fonction OU "photos à venir") */
+function renderBack(teamId) {
+  if (typeof FoyerDB === 'undefined') return;
+  var item = FoyerDB.getTeamItem(teamId);
+  if (!item) return;
+  var members = Array.isArray(item.members) ? item.members : [];
+  var card = document.querySelector('.team-card-flip[data-team-id="' + teamId + '"]');
+  if (!card) return;
+  var back = card.querySelector('.face-back');
+  if (!back) return;
+
+  var html = '<div class="back-top">' +
+    '<button class="back-close" onclick="window.flipBack(\'' + teamId + '\', event)" aria-label="Retour">↩</button>';
+
+  if (members.length > 0) {
+    var idx = window.flipState[teamId] || 0;
+    html += '<div class="back-counter">' + (idx + 1) + ' / ' + members.length + '</div>';
   } else {
-    g.innerHTML = members.map(function(m) {
-      var photo = m.photoData
-        ? '<img src="' + m.photoData + '" alt="' + escHTML(m.name) + '" class="member-photo">'
-        : '<div class="member-placeholder">' + escHTML(item.icon || '👥') + '</div>';
-      return '<div class="member-card">' + photo +
-        '<div class="member-name">' + escHTML(m.name || '') + '</div>' +
-        (m.title ? '<div class="member-title">' + escHTML(m.title) + '</div>' : '') +
+    html += '<div></div>';
+  }
+  html += '</div>';
+
+  if (members.length === 0) {
+    /* Pas de photos : message "Photos à venir" */
+    html += '<div class="back-body">' +
+      '<div class="back-empty">' +
+        '<div class="be-icon">📷</div>' +
+        '<div class="be-title">Photos à venir</div>' +
+        '<div class="be-text">Les photos de cette équipe<br>seront bientôt ajoutées.</div>' +
+      '</div></div>';
+  } else {
+    var idx = window.flipState[teamId] || 0;
+    var m = members[idx];
+    var photo = m.photoData
+      ? '<img src="' + m.photoData + '" alt="' + escHTML(m.name) + '" class="back-photo">'
+      : '<div class="back-photo-placeholder">' + escHTML(item.icon || '👥') + '</div>';
+    html += '<div class="back-body">' +
+      photo +
+      '<div class="back-name">' + escHTML(m.name || '') + '</div>' +
+      '<div class="back-title">' + escHTML(m.title || item.role || '') + '</div>' +
+      '</div>';
+
+    /* Flèches navigation (seulement si plus d'un membre) */
+    if (members.length > 1) {
+      html += '<div class="back-nav">' +
+        '<button class="nav-arrow" onclick="window.flipPrev(\'' + teamId + '\', event)" aria-label="Précédent">◀</button>' +
+        '<button class="nav-arrow" onclick="window.flipNext(\'' + teamId + '\', event)" aria-label="Suivant">▶</button>' +
         '</div>';
-    }).join('');
+    }
   }
 
-  document.getElementById('teamModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-};
+  back.innerHTML = html;
+}
 
-window.closeTeamModal = function() {
-  document.getElementById('teamModal').classList.remove('open');
-  document.body.style.overflow = '';
-};
-
-/* Fermer en cliquant sur le fond */
-document.addEventListener('DOMContentLoaded', function() {
-  var overlay = document.getElementById('teamModal');
-  if (overlay) {
-    overlay.addEventListener('click', function(e) {
-      if (e.target === overlay) window.closeTeamModal();
-    });
-  }
-  /* Fermer avec Escape */
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') window.closeTeamModal();
-  });
-});
-
-/* ═══════════════════════════════════════
+/* ═══════════════════════════════════════════════
    RENDU DE LA PAGE
-═══════════════════════════════════════ */
+═══════════════════════════════════════════════ */
 (function () {
   'use strict';
   if (typeof FoyerDB === 'undefined') return;
@@ -412,16 +544,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     grid.innerHTML = items.map(function(t) {
       var nb = Array.isArray(t.members) ? t.members.length : 0;
-      var label = nb > 0
-        ? '👁 Voir les ' + nb + ' photo' + (nb > 1 ? 's' : '')
-        : '👁 Voir l\'équipe';
-      return '<article class="team-card" onclick="window.openTeamModal(\'' + escHTML(t.id) + '\')">' +
-        '<div class="team-avatar">' + escHTML(t.icon || '👥') + '</div>' +
-        (t.count ? '<span class="team-count">' + escHTML(t.count) + '</span>' : '') +
-        '<div class="team-role">' + escHTML(t.role || '') + '</div>' +
-        (t.description ? '<p>' + escHTML(t.description) + '</p>' : '') +
-        '<span class="team-card-badge">' + label + '</span>' +
-        '</article>';
+      var hint = nb > 0
+        ? '👆 Voir les ' + nb + ' photo' + (nb > 1 ? 's' : '')
+        : '👆 Cliquer pour voir';
+      return '<article class="team-card-flip" data-team-id="' + escHTML(t.id) + '"' +
+        ' onclick="window.flipCard(\'' + escHTML(t.id) + '\', event)">' +
+        '<div class="flip-inner">' +
+          '<div class="face face-front">' +
+            '<div class="team-avatar">' + escHTML(t.icon || '👥') + '</div>' +
+            (t.count ? '<span class="team-count">' + escHTML(t.count) + '</span>' : '') +
+            '<div class="team-role">' + escHTML(t.role || '') + '</div>' +
+            (t.description ? '<p>' + escHTML(t.description) + '</p>' : '') +
+            '<span class="flip-hint">' + hint + '</span>' +
+          '</div>' +
+          '<div class="face face-back"></div>' +
+        '</div>' +
+      '</article>';
     }).join('');
   }
 
