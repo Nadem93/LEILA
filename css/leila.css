@@ -126,14 +126,14 @@
 /* ── Grille des 3 services ─────────────────────────── */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.6rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1.5rem;
 }
 .service-card {
   background: white;
-  border-radius: 18px;
-  padding: 2rem 1.8rem;
+  border-radius: 14px;
+  padding: 1.4rem 1.2rem;
   box-shadow: 0 6px 24px rgba(0,0,0,.06);
   border-top: 5px solid var(--svc-leila);
   display: flex;
@@ -148,8 +148,8 @@
 .service-emp   { border-top-color: var(--svc-emp); }
 
 .service-card-icon {
-  font-size: 2.4rem;
-  margin-bottom: .2rem;
+  font-size: 1.8rem;
+  margin-bottom: .1rem;
 }
 .service-card-tag {
   display: inline-block;
@@ -170,22 +170,22 @@
 
 .service-card h3 {
   font-family: 'Playfair Display', serif;
-  font-size: 1.4rem;
-  margin: .3rem 0 .1rem;
+  font-size: 1.15rem;
+  margin: .2rem 0 0;
 }
 .service-card-meta {
-  font-size: .9rem;
+  font-size: .82rem;
   color: var(--text-light);
 }
 .service-card-list {
   list-style: none;
   padding: 0;
-  margin: .8rem 0 1rem;
+  margin: .4rem 0 .6rem;
 }
 .service-card-list li {
-  padding: .3rem 0 .3rem 1.5rem;
+  padding: .2rem 0 .2rem 1.5rem;
   position: relative;
-  font-size: .92rem;
+  font-size: .85rem;
 }
 .service-card-list li::before {
   content: '✓';
@@ -198,7 +198,7 @@
 .service-saj   .service-card-list li::before { color: var(--svc-saj-dark); }
 .service-savs  .service-card-list li::before { color: var(--svc-savs-dark); }
 .service-emp   .service-card-list li::before { color: var(--svc-emp-dark); }
-.service-card .btn { margin-top: auto; align-self: flex-start; }
+.service-card .btn { margin-top: auto; align-self: flex-start; font-size: .88rem; padding: .5rem 1rem; }
 
 /* Bannière EMP */
 .service-emp-banner {
