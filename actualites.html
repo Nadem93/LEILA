@@ -791,7 +791,6 @@
     const filter = e.target.closest('.filter-pill, .cat-list-item');
     if (filter && filter.dataset.filter) { setFilter(filter.dataset.filter); }
     if (e.target.id === 'modal-close') closeArticle();
-    if (e.target.id === 'overlay') closeArticle();
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeArticle(); });
 
