@@ -347,7 +347,7 @@ ul { list-style: none; }
 /* ===== Hero ===== */
 .hero {
   position: relative;
-  padding: 3rem 0 3rem;
+  padding: 6rem 0 6rem;
   overflow: hidden;
   background: linear-gradient(160deg, var(--primary-faint) 0%, #deedf5 55%, #f0f8fb 100%);
 }
@@ -491,7 +491,7 @@ ul { list-style: none; }
 
 /* ===== Sections ===== */
 .section {
-  padding: 2rem 0;
+  padding: 5rem 0;
 }
 
 .section-alt {
@@ -499,7 +499,7 @@ ul { list-style: none; }
 }
 
 .section-head {
-  margin-bottom: 1.5rem;
+  margin-bottom: 3.5rem;
   max-width: 760px;
 }
 
@@ -1057,7 +1057,7 @@ ul { list-style: none; }
 .footer {
   background: #152030;
   color: rgba(255,255,255,0.82);
-  padding-top: 2rem;
+  padding-top: 4rem;
 }
 
 .footer-grid {
@@ -1132,7 +1132,7 @@ ul { list-style: none; }
 /* ===== Page Header (inner pages) ===== */
 .page-header {
   background: linear-gradient(155deg, #edf4f8 0%, #deedf5 50%, #e9f4f9 100%);
-  padding: 2rem 0 4rem;
+  padding: 4rem 0 10rem;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -1990,8 +1990,8 @@ ul { list-style: none; }
 @media (max-width: 600px) {
   :root { --font-size-base: 15px; }
 
-  .section { padding: 1.5rem 0; }
-  .hero { padding: 2rem 0 2rem; }
+  .section { padding: 3.5rem 0; }
+  .hero { padding: 3rem 0 4.5rem; }
   .hero::after { height: 50px; }
 
   .footer-grid { grid-template-columns: 1fr; }
