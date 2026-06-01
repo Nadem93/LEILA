@@ -1953,7 +1953,7 @@ ul { list-style: none; }
     background: white;
     flex-direction: column;
     width: 80%;
-    max-width: 300px;
+    max-width: 320px;
     height: calc(100vh - 68px);
     padding: 1.5rem;
     align-items: flex-start;
@@ -1961,10 +1961,29 @@ ul { list-style: none; }
     transition: right 0.3s ease;
     box-shadow: var(--shadow-lg);
     gap: 0.2rem;
+    overflow-y: auto;
+    z-index: 1000;
   }
 
   .nav.open { right: 0; }
-  .burger { display: flex; }
+  .burger { display: flex; position: relative; z-index: 1002; }
+
+  /* Voile sombre derrière le panneau pour masquer la page */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 30, 45, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 999;
+  }
+  body.nav-open::before {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  body.nav-open { overflow: hidden; }
 
   .burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
   .burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
