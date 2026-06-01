@@ -10,39 +10,30 @@ const burger = document.getElementById('burger');
 const nav    = document.getElementById('nav');
 
 if (burger && nav) {
-  const closeMenu = () => {
-    burger.classList.remove('open');
-    nav.classList.remove('open');
-    document.body.classList.remove('nav-open');
-    burger.setAttribute('aria-expanded', 'false');
-  };
-  const openMenu = () => {
-    burger.classList.add('open');
-    nav.classList.add('open');
-    document.body.classList.add('nav-open');
-    burger.setAttribute('aria-expanded', 'true');
-  };
-
-  burger.addEventListener('click', e => {
-    e.stopPropagation();
-    if (nav.classList.contains('open')) closeMenu();
-    else openMenu();
+  burger.addEventListener('click', () => {
+    const open = burger.classList.toggle('open');
+    nav.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
   });
 
   nav.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', closeMenu);
+    link.addEventListener('click', () => {
+      burger.classList.remove('open');
+      nav.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    });
   });
 
-  // Fermer sur clic extérieur (voile ou n'importe quel élément hors panneau/burger)
+  // Fermer sur clic extérieur
   document.addEventListener('click', e => {
     if (nav.classList.contains('open') && !nav.contains(e.target) && !burger.contains(e.target)) {
-      closeMenu();
+      burger.classList.remove('open');
+      nav.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
     }
-  });
-
-  // Fermer sur Echap
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && nav.classList.contains('open')) closeMenu();
   });
 }
 
