@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/><link rel="manifest" href="manifest.json"/><link rel="apple-touch-icon" href="icon-192.png"/><meta name="theme-color" content="#0f2b4a"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Journal de bord — FTR</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    /* Champs plats (sans effet de profondeur) dans le modal de rédaction */
+    #modalEntry input,
+    #modalEntry select,
+    #modalEntry textarea {
+      background: #fff;
+      box-shadow: none;
+      border: 1px solid rgba(15,43,74,.15);
+    }
+    #modalEntry input:focus,
+    #modalEntry select:focus,
+    #modalEntry textarea:focus {
+      box-shadow: 0 0 0 3px rgba(15,43,74,.12);
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <div class="main">
+    <header class="header">
+      <div class="header-info"><div class="header-title">Journal de bord</div></div>
+      <div class="header-right">
+        <button id="btnExportJournal" class="btn btn-outline btn-sm" onclick="exportJournalPDF()" style="gap:.4rem;display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span class="btn-add-label">Exporter PDF</span>
+        </button>
+        <button class="btn btn-accent btn-add-resident" onclick="showNewEntryForm()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span class="btn-add-label">Nouvelle entrée</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- VUE LISTE -->
+      <div id="journalListView">
+        <div class="toolbar" style="margin-bottom:1.5rem;justify-content:center;max-width:760px;margin-left:auto;margin-right:auto">
+          <div class="search-box">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="jSearch" placeholder="Rechercher…"/>
+          </div>
+          <select id="jFilterResident" style="width:auto"><option value="">Tous les résidents</option></select>
+          <select id="jFilterCat" style="width:auto"><option value="">Toutes les catégories</option></select>
+          <input type="date" id="jFilterDate" style="width:auto" title="Date de début"/>
+          <input type="date" id="jFilterDateEnd" style="width:auto" title="Date de fin"/>
+          <button class="btn btn-ghost btn-sm" id="btnUnreadFilter" onclick="toggleUnreadFilter()" style="white-space:nowrap">
+            <span id="unreadDot" style="width:8px;height:8px;border-radius:50%;background:var(--blue);display:inline-block;flex-shrink:0"></span>
+            Non lus <span id="unreadCount" style="background:var(--blue);color:#fff;border-radius:var(--r-full);padding:1px 6px;font-size:.7rem;margin-left:2px">0</span>
+          </button>
+        </div>
+        <div id="entriesList" style="display:flex;flex-direction:column;gap:.75rem;max-width:760px;margin:0 auto"></div>
+      </div>
+
+      <!-- VUE FORMULAIRE -->
+      <div id="journalFormView" style="display:none;max-width:720px;margin:0 auto">
+        <button class="btn btn-ghost btn-sm" onclick="showJournalList()" style="margin-bottom:1.25rem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><polyline points="15 18 9 12 15 6"/></svg>
+          Retour à la liste
+        </button>
+        <div id="entryFormContainer"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL NOUVELLE ENTRÉE -->
+<div class="modal-overlay" id="modalEntry">
+  <div class="modal lg" style="max-width:960px">
+    <div class="modal-header">
+      <span class="modal-title" id="modalEntryTitle">Nouvelle entrée</span>
+      <button class="modal-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="entryId"/>
+      <div class="form-row">
+        <div class="form-group"><label class="required">Résident concerné</label><select id="eResident"><option value="">— Sélectionner —</option></select></div>
+        <div class="form-group"><label class="required">Catégorie</label><select id="eCategorie"><option value="">— Sélectionner —</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Date et heure</label><input type="datetime-local" id="eDate"/></div>
+        <div class="form-group"><label>Objectif lié</label><select id="eObjectif"><option value="">— Aucun —</option></select></div>
+      </div>
+      <div class="form-group"><label class="required">Contenu</label>
+        <div style="display:flex;gap:.3rem;margin-bottom:.25rem">
+          <button class="btn btn-ghost btn-sm" style="font-size:.65rem;padding:1px 6px" onclick="aiAssistJournal('redaction')" title="Rédiger une entrée">✍ Rédiger</button>
+          <button class="btn btn-ghost btn-sm" style="font-size:.65rem;padding:1px 6px" onclick="aiAssistJournal('correction')" title="Corriger le texte">✓ Corriger</button>
+          <button class="btn btn-ghost btn-sm" style="font-size:.65rem;padding:1px 6px" onclick="aiAssistJournal('reformulation')" title="Reformulation institutionnelle">🏛 Reformuler</button>
+        </div>
+        <textarea id="eContenu" rows="6" placeholder="Décrivez l'événement, l'observation ou l'intervention…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Visibilité</label>
+        <div style="display:flex;gap:1rem">
+          <label class="checkbox-wrap"><input type="radio" name="eVisibilite" value="equipe" checked/> Équipe uniquement</label>
+          <label class="checkbox-wrap"><input type="radio" name="eVisibilite" value="tous"/> Tous</label>
+          <label class="checkbox-wrap"><input type="radio" name="eVisibilite" value="confidentiel"/> Confidentiel</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline btn-sm" onclick="closeAllModals()">Annuler</button>
+      <button class="btn btn-danger btn-sm" id="btnDeleteEntry" style="margin-right:auto;display:none" onclick="deleteEntry()">Supprimer</button>
+      <button class="btn btn-primary btn-sm" onclick="saveEntry()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="js/app.js"></script>
+<script>
+  Auth.requireAuth();
+  const _s = Auth.getSession();
+  if (_s && _s.role === 'admin') {
+    document.getElementById('btnExportJournal').style.display = '';
+  }
+</script>
+<script src="js/journal.js"></script>
+</body>
+</html>
